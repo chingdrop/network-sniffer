@@ -1,2 +1,2 @@
-# Wifi_Analyzer
-Wifi Analyzer
+# wifi_analyzer
+Wifi analyzer
