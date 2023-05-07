@@ -4,6 +4,7 @@ from cement.core.exc import CaughtSignal
 from .core.exc import ScapyEndpointError
 from .controllers.base import Base
 from .controllers.scans import Scans
+from .controllers.resolver import Resolver
 
 # configuration defaults
 CONFIG = init_defaults('scapy_endpoint')
@@ -44,7 +45,8 @@ class ScapyEndpoint(App):
         # register handlers
         handlers = [
             Base,
-            Scans
+            Scans,
+            Resolver,
         ]
 
 
