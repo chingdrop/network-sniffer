@@ -24,3 +24,39 @@ class Resolver(Controller):
         server = self.app.pargs.name_server
         ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="A")))
         print(f'{domain} is {ans.an.rdata}.')
+
+    @ex(
+        help='resolves an SOA record',
+        arguements=[
+            (['target_domain'], 
+             {'help': 'target domain name',
+              'action': 'name resolve'}),
+            (['name_server'], 
+             {'help': 'resolving name server',
+              'action': 'name server'})
+        ],
+    )
+    def resolve_soa_record(self):
+        domain = self.app.pargs.target_domain
+        server = self.app.pargs.name_server
+        ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="SOA")))
+        print(f'Primary name server is {ans.an.mname}, contact at {ans.an.rname}')
+
+    @ex(
+        help='resolves a MX record',
+        arguements=[
+            (['target_domain'], 
+             {'help': 'target domain name',
+              'action': 'name resolve'}),
+            (['name_server'], 
+             {'help': 'resolving name server',
+              'action': 'name server'})
+        ],
+    )
+    def resolve_soa_record(self):
+        domain = self.app.pargs.target_domain
+        server = self.app.pargs.name_server
+        ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="MX")))
+        ret = [x.exchange for x in ans.an.iterpayloads()]
+        for i in ret:
+            print(f'MX {i}')
