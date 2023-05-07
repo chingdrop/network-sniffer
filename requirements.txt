@@ -1,2 +1,5 @@
 cement==3.0.8
+cement[jinja2]
+cement[yaml]
+cement[colorlog]
 scapy==2.5.0
