@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-from scapy.all import *
+from scapy.all import sr, sr1, sniff, ARP, IP, TCP, Ether, ICMP, UDP, RandShort
 
 class ScanOperator():
 
