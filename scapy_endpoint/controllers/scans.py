@@ -1,5 +1,5 @@
 from cement import Controller, ex
-from scapy import sr, IP, TCP
+from scapy.all import sr, IP, TCP
 
 
 class Scans(Controller):

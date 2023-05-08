@@ -1,5 +1,5 @@
 from cement import Controller, ex
-from scapy import sniff
+from scapy.all import sniff
 
 
 class Sniff(Controller):

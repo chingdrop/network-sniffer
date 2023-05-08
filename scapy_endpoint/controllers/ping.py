@@ -1,5 +1,5 @@
 from cement import Controller, ex
-from scapy import sr, ARP, Ether, IP, ICMP
+from scapy.all import sr, ARP, Ether, IP, ICMP
 
 
 class Ping(Controller):

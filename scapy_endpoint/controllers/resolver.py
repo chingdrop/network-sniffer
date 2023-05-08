@@ -1,5 +1,5 @@
 from cement import Controller, ex
-from scapy import sr1, RandShort, DNS, DNSQR, IP, UDP
+from scapy.all import sr1, RandShort, DNS, DNSQR, IP, UDP
 
 
 class Resolver(Controller):
