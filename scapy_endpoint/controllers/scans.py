@@ -16,7 +16,7 @@ class Scans(Controller):
               'action': 'active scan'})
         ],
     )
-    def ACKscan(self):
+    def ack_scan(self):
         target = self.app.pargs.target_host
         ans, unans = sr(IP(dst=target)/TCP(dport=[80,666],flags="A"))
         for s,r in ans:
@@ -31,7 +31,7 @@ class Scans(Controller):
               'action': 'active scan'})
         ],
     )
-    def XMASscan(self):
+    def xmas_scan(self):
         target = self.app.pargs.target_host
         ans, unans = sr(IP(dst=target)/TCP(dport=666,flags="FPU"))
         for s,r in ans:
@@ -46,7 +46,7 @@ class Scans(Controller):
               'action': 'active scan'})
         ],
     )
-    def IPscan(self):
+    def ip_scan(self):
         target = self.app.pargs.target_host
         ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY",retry=2)
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
