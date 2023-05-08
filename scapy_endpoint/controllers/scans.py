@@ -41,8 +41,8 @@ class Scans(Controller):
     @ex(
         help='starts an IP scan',
         arguements=[
-            (['target_range'], 
-             {'help': 'target IP range',
+            (['target_host'], 
+             {'help': 'target host IP',
               'action': 'active scan'})
         ],
     )
