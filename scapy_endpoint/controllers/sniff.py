@@ -10,7 +10,7 @@ class Sniff(Controller):
 
     @ex(
         help='starts sniffing on the specified interface.',
-        arguements=[
+        arguments=[
             (['wlan_interface'], 
              {'help': 'wlan interface',
               'action': 'sniff wlan'})

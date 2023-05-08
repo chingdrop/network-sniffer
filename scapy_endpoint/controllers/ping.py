@@ -10,7 +10,7 @@ class Ping(Controller):
 
     @ex(
         help='starts an ICMP ping',
-        arguements=[
+        arguments=[
             (['target_range'], 
              {'help': 'target IP range',
               'action': 'active ping'})
@@ -23,7 +23,7 @@ class Ping(Controller):
 
     @ex(
         help='starts an ARP ping',
-        arguements=[
+        arguments=[
             (['target_host'], 
              {'help': 'target host IP',
               'action': 'active ping'})

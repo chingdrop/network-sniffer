@@ -10,7 +10,7 @@ class Scans(Controller):
 
     @ex(
         help='starts an ACK scan',
-        arguements=[
+        arguments=[
             (['target_host'], 
              {'help': 'target host IP',
               'action': 'active scan'})
@@ -25,7 +25,7 @@ class Scans(Controller):
 
     @ex(
         help='starts an XMAS scan',
-        arguements=[
+        arguments=[
             (['target_host'], 
              {'help': 'target host IP',
               'action': 'active scan'})
@@ -40,7 +40,7 @@ class Scans(Controller):
 
     @ex(
         help='starts an IP scan',
-        arguements=[
+        arguments=[
             (['target_host'], 
              {'help': 'target host IP',
               'action': 'active scan'})

@@ -10,7 +10,7 @@ class Resolver(Controller):
 
     @ex(
         help='resolves an A record',
-        arguements=[
+        arguments=[
             (['target_domain'], 
              {'help': 'target domain name',
               'action': 'name resolve'}),
@@ -27,7 +27,7 @@ class Resolver(Controller):
 
     @ex(
         help='resolves an SOA record',
-        arguements=[
+        arguments=[
             (['target_domain'], 
              {'help': 'target domain name',
               'action': 'name resolve'}),
@@ -44,7 +44,7 @@ class Resolver(Controller):
 
     @ex(
         help='resolves a MX record',
-        arguements=[
+        arguments=[
             (['target_domain'], 
              {'help': 'target domain name',
               'action': 'name resolve'}),
