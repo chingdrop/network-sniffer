@@ -13,7 +13,7 @@ class Scans(Controller):
         arguments=[
             (['target_host'], 
              {'help': 'target host IP',
-              'action': 'scan'})
+              'action': 'store'})
         ],
     )
     def ack_scan(self):
