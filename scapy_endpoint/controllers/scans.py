@@ -28,7 +28,7 @@ class Scans(Controller):
         arguments=[
             (['target_host'], 
              {'help': 'target host IP',
-              'action': 'scan'})
+              'action': 'store'})
         ],
     )
     def xmas_scan(self):
@@ -43,7 +43,7 @@ class Scans(Controller):
         arguments=[
             (['target_host'], 
              {'help': 'target host IP',
-              'action': 'scan'})
+              'action': 'store'})
         ],
     )
     def ip_scan(self):

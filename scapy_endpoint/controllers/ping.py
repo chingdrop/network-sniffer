@@ -13,7 +13,7 @@ class Ping(Controller):
         arguments=[
             (['target_range'], 
              {'help': 'target IP range',
-              'action': 'ping'})
+              'action': 'store'})
         ],
     )
     def icmp_ping(self):
@@ -26,7 +26,7 @@ class Ping(Controller):
         arguments=[
             (['target_host'], 
              {'help': 'target host IP',
-              'action': 'ping'})
+              'action': 'store'})
         ],
     )
     def arp_ping(self):

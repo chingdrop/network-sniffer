@@ -13,10 +13,10 @@ class Resolver(Controller):
         arguments=[
             (['target_domain'], 
              {'help': 'target domain name',
-              'action': 'resolve'}),
+              'action': 'store'}),
             (['name_server'], 
              {'help': 'resolving name server',
-              'action': 'query'})
+              'action': 'store'})
         ],
     )
     def resolve_a_record(self):
@@ -30,10 +30,10 @@ class Resolver(Controller):
         arguments=[
             (['target_domain'], 
              {'help': 'target domain name',
-              'action': 'resolve'}),
+              'action': 'store'}),
             (['name_server'], 
              {'help': 'resolving name server',
-              'action': 'query'})
+              'action': 'store'})
         ],
     )
     def resolve_soa_record(self):
@@ -47,10 +47,10 @@ class Resolver(Controller):
         arguments=[
             (['target_domain'], 
              {'help': 'target domain name',
-              'action': 'resolve'}),
+              'action': 'store'}),
             (['name_server'], 
              {'help': 'resolving name server',
-              'action': 'query'})
+              'action': 'store'})
         ],
     )
     def resolve_soa_record(self):
