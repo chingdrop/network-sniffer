@@ -13,7 +13,7 @@ class Sniff(Controller):
         arguments=[
             (['wlan_interface'], 
              {'help': 'wlan interface',
-              'action': 'sniff wlan'})
+              'action': 'sniff'})
         ],
     )
     def wlan_sniff(self):
