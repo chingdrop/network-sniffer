@@ -22,7 +22,11 @@ class Resolver(Controller):
     def resolve_a_record(self):
         domain = self.app.pargs.target_domain
         server = self.app.pargs.name_server
-        ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="A")))
+        try:
+            ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="A")))
+        except Exception as e:
+            print(e.message, e.args)
+
         print(f'{domain} is {ans.an.rdata}.')
 
     @ex(
@@ -39,7 +43,11 @@ class Resolver(Controller):
     def resolve_soa_record(self):
         domain = self.app.pargs.target_domain
         server = self.app.pargs.name_server
-        ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="SOA")))
+        try:
+            ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="SOA")))
+        except Exception as e:
+            print(e.message, e.args)
+
         print(f'Primary name server is {ans.an.mname}, contact at {ans.an.rname}')
 
     @ex(
@@ -53,10 +61,14 @@ class Resolver(Controller):
               'action': 'store'})
         ],
     )
-    def resolve_soa_record(self):
+    def resolve_mx_record(self):
         domain = self.app.pargs.target_domain
         server = self.app.pargs.name_server
-        ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="MX")))
+        try:
+            ans = sr1(IP(dst=server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=domain, qtype="MX")))
+        except Exception as e:
+            print(e.message, e.args)
+
         ret = [x.exchange for x in ans.an.iterpayloads()]
         for i in ret:
             print(f'MX {i}')

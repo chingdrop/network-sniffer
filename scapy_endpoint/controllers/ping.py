@@ -18,7 +18,11 @@ class Ping(Controller):
     )
     def icmp_ping(self):
         ip_range = self.app.pargs.target_range
-        ans, unans = sr(IP(dst=ip_range)/ICMP())
+        try:
+            ans, unans = sr(IP(dst=ip_range)/ICMP())
+        except Exception as e:
+            print(e.message, e.args)
+
         ans.summary(lambda s,r: r.sprintf("%IP.src% is alive"))
 
     @ex(
@@ -31,5 +35,9 @@ class Ping(Controller):
     )
     def arp_ping(self):
         target = self.app.pargs.target_host
-        ans, unans = sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target),timeout=2)
+        try:
+            ans, unans = sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target),timeout=2)
+        except Exception as e:
+            print(e.message, e.args)
+            
         ans.summary(lambda s,r: r.sprintf("%Ether.src% | %ARP.psrc%"))

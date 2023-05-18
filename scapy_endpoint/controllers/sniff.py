@@ -18,6 +18,9 @@ class Sniff(Controller):
     )
     def wlan_sniff(self):
         interface = self.app.pargs.wlan_interface
-        sniff(iface=interface, \
-        prn=lambda x:x.sprintf( \
-        "{Dot11Beacon:%Dot11.addr3%\t%Dot11Beacon.info%\t%PrismHeader.channel%\t%Dot11Beacon.cap%}"))
+        try:
+            sniff(iface=interface, \
+            prn=lambda x:x.sprintf( \
+            "{Dot11Beacon:%Dot11.addr3%\t%Dot11Beacon.info%\t%PrismHeader.channel%\t%Dot11Beacon.cap%}"))
+        except Exception as e:
+            print(e.message, e.args)

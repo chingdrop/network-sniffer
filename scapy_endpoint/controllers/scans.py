@@ -18,10 +18,14 @@ class Scans(Controller):
     )
     def ack_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = sr(IP(dst=target)/TCP(dport=[80,666],flags="A"))
+        try:
+            ans, unans = sr(IP(dst=target)/TCP(dport=[80,666],flags="A"), timeout=5)
+        except Exception as e:
+            print(e.message, e.args)
+
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
-               print(f"Port {s[TCP].dport} is unfiltered.")
+                print(f"Port {s[TCP].dport} is unfiltered.")
 
     @ex(
         help='starts an XMAS scan',
@@ -33,10 +37,14 @@ class Scans(Controller):
     )
     def xmas_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = sr(IP(dst=target)/TCP(dport=666,flags="FPU"))
+        try:
+            ans, unans = sr(IP(dst=target)/TCP(dport=666,flags="FPU"), timeout=5)
+        except Exception as e:
+            print(e.message, e.args)
+
         for s,r in ans:
             if s[TCP].dport is not None:
-                 print(f"{s[TCP].dport} is open.")
+                print(f"{s[TCP].dport} is open.")
 
     @ex(
         help='starts an IP scan',
@@ -48,5 +56,9 @@ class Scans(Controller):
     )
     def ip_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY",retry=2)
+        try:
+            ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY", retry=2, timeout=5)
+        except Exception as e:
+            print(e.message, e.args)
+        
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
