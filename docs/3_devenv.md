@@ -9,6 +9,7 @@ Make sure to enable SSH password use in order to open the directory in VS Code.
 	`git config --global user.name "x"`  
 	`git config --global user.email "x"`
 <br>
+
 ## Installing the Codebase
 Pip packages must be installed in root in order to use socket commands.
 1. Create the code directory.  
