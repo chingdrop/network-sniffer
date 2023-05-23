@@ -1,3 +1,4 @@
+# Development Environment
 ## Setting up Github SSH keys
 Make sure to enable SSH password use in order to open the directory in VS Code.
 1. Go to github.com and navigate to your account settings.

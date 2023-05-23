@@ -1,3 +1,4 @@
+# Raspi
 ## Creating Boot Media for Raspi
 1. Take your Micro SD card and plug it into your working PC. 
 2. Use the Raspi image writer to create the boot media for the Raspi. 

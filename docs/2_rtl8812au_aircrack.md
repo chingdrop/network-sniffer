@@ -1,3 +1,4 @@
+# RTL8812AU and Aircrack
 ## Installing RTL8812AU Drivers and AirCrack
 1. Install the prereq packages for RTL8812AU and aircrack.  
 	`sudo apt install -y dkms iw rfkill`
