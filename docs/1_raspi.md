@@ -8,15 +8,15 @@
 7. Boot up the Raspi and wait a few seconds before trying to SSH into the device.
 
 ## Ubuntu First Steps for Raspi
-1. Update and Upgrade for the fresh OS install.
+1. Update and Upgrade for the fresh OS install.  
 	`sudo apt update && sudo apt dist-upgrade -y`
-3. Set the proper permission for the SSH folder.
-	`mkdir -p ~/.ssh`
-	`sudo chmod 700 ~/.ssh/`
-	`sudo chmod 600 ~/.ssh/*` 
-	`sudo chown -R ${USER} ~/.ssh/`
+3. Set the proper permission for the SSH folder.  
+	`mkdir -p ~/.ssh`  
+	`sudo chmod 700 ~/.ssh/`  
+	`sudo chmod 600 ~/.ssh/*`  
+	`sudo chown -R ${USER} ~/.ssh/`  
 	`sudo chgrp -R ${USER} ~/.ssh/`
-4. Create a new SSH key for the Raspi. Follow the instructions and tie the credentials with a password.
+4. Create a new SSH key for the Raspi. Follow the instructions and tie the credentials with a password.  
 	`ssh-keygen -t rsa -b 4096`
-6. Install the basic network utility packages.
+6. Install the basic network utility packages.  
 	`sudo apt install -y net-tools dnsutils git python3 python3-pip build-essential wireless-tools`
