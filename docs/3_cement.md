@@ -3,6 +3,7 @@
 ## Creating the Cement Project
 
 I created the cement project in a virtual environment on my working PC in WSL.
+Sources - <https://docs.builtoncement.com/getting-started/installation>, <https://docs.builtoncement.com/getting-started/beginner-tutorial/part-1-creating-your-first-project>
 
 1. Make a new virtual environment.  
     `mkvirtualenv scapy_endpoint`
