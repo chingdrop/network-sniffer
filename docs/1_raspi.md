@@ -2,6 +2,8 @@
 
 ## Creating Boot Media for Raspi
 
+Sources - <https://ubuntu.com/tutorials/how-to-install-ubuntu-on-your-raspberry-pi#1-overview>
+
 1. Take your Micro SD card and plug it into your working PC.
 2. Use the Raspi image writer to create the boot media for the Raspi.
 3. Select Ubuntu Server 22.04 64-bit as the image.
