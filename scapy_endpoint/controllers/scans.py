@@ -54,14 +54,14 @@ class Scans(Controller):
                 print(f"{s[TCP].dport} is open.")
 
     @ex(
-        help='starts an IP scan',
+        help='starts a protocol scan',
         arguments=[
             (['target_host'], 
              {'help': 'target host IP',
               'action': 'store'})
         ],
     )
-    def ip_scan(self):
+    def protocol_scan(self):
         target = self.app.pargs.target_host
         ans, unans = scan_handler(IP(dst=target,proto=(0,255))/"SCAPY")
         
