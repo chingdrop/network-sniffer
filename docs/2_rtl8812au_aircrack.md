@@ -25,7 +25,7 @@ Sources - <https://github.com/morrownr/8812au-20210629>
 
         ```bash
         [Unit]
-        Description=Makes wlan1 interface run in promiscuous mode at boot
+        Description="Makes wlx00c0caaff82e interface run in monitor mode at boot."
         After=dbus-fi.w1.wpa_supplicant1.service
 
         [Service]
