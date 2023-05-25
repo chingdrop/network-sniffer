@@ -1,6 +1,6 @@
 from timeit import default_timer as timer
 from cement import Controller, ex
-from scapy.all import sr, IP, TCP
+from scapy.all import sr, srp, ARP, Ether, IP, TCP
 
 
 def sr_handler(pkt):
@@ -66,3 +66,20 @@ class Scans(Controller):
         ans, unans = sr_handler(IP(dst=target,proto=(0,255))/"SCAPY")
         
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
+
+    @ex(
+        help='starts an ip scan',
+        arguments=[
+            (['target_network'], 
+             {'help': 'target network',
+              'action': 'store'})
+        ],
+    )
+    def ip_scan(self):
+        target_network = self.app.pargs.target_network
+        try:
+            ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target_network), timeout=3)
+        except Exception as e:
+            print(e)
+
+        ans.summary(lambda s,r: r.sprintf("%Ether.src% - %ARP.psrc%"))
