@@ -3,13 +3,13 @@ from cement import Controller, ex
 from scapy.all import sr, IP, TCP
 
 
-def scan_handler(pkt):
+def sr_handler(pkt):
         try:
             start = timer()
             ans, unans = sr(pkt, timeout=5)
             end = timer()
         except Exception as e:
-            print(e.message, e.args)
+            print(e)
 
         delta = end - start
         print(f'Scan took {delta} seconds to complete.')
@@ -31,7 +31,7 @@ class Scans(Controller):
     )
     def ack_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = scan_handler(IP(dst=target)/TCP(dport=(1,1024),flags="A"))
+        ans, unans = sr_handler(IP(dst=target)/TCP(dport=(1,1024),flags="A"))
 
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
@@ -47,7 +47,7 @@ class Scans(Controller):
     )
     def xmas_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = scan_handler(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"))
+        ans, unans = sr_handler(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"))
 
         for s,r in ans:
             if s[TCP].dport is not None:
@@ -63,6 +63,6 @@ class Scans(Controller):
     )
     def protocol_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = scan_handler(IP(dst=target,proto=(0,255))/"SCAPY")
+        ans, unans = sr_handler(IP(dst=target,proto=(0,255))/"SCAPY")
         
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
