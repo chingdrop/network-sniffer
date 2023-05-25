@@ -9,8 +9,7 @@
 5. Write the image to the Micro SD.
 6. Eject it from your working PC and plug it into the Raspi.
 7. Boot up the Raspi and wait a few seconds before trying to SSH into the device.
-\
-
+  
 ## Ubuntu First Steps for Raspi
 
 1. Update and Upgrade for the fresh OS install.  

@@ -12,8 +12,7 @@ Make sure to enable SSH password use in order to open the directory in VS Code.
 5. Configure the name and email for github.  
     `git config --global user.name "x"`  
     `git config --global user.email "x"`
-\
-
+  
 ## Installing the Codebase
 
 Pip packages must be installed in root in order to use socket commands.
