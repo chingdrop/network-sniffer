@@ -2,7 +2,7 @@
 
 ## Setting up Github SSH keys
 
-Make sure to enable SSH password use in order to open the directory in VS Code.
+An alternative is setting up key forwarding on your working PC's SSH agent.
 
 1. Go to github.com and navigate to your account settings.
 2. Go to the SSH keys section and add a new key.
@@ -12,6 +12,8 @@ Make sure to enable SSH password use in order to open the directory in VS Code.
 5. Configure the name and email for github.  
     `git config --global user.name "x"`  
     `git config --global user.email "x"`
+
+**Note** - Make sure to enable SSH password use in order to open the directory in VS Code.
   
 ## Installing the Codebase
 

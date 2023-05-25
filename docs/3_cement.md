@@ -19,10 +19,10 @@ I created the cement project in a virtual environment on my working PC in WSL.
 
 ## Starting the Git Repository
 
-There's probably a better way but whatever. The repository will be cloned to the Raspi where most of the development will be done.
+The repository will be cloned to the Raspi where most of the development will be done.
 
 1. Go to github.com and create a new private repository.
-2. Once created, click under the greeen **Code** button.
+2. Once created, click under the green **Code** button.
 3. Collect the repository's SSH address. An example is:  
     `git@github.com:chingdrop/wifi_analyzer.git`
 4. Go to the project directory and initialize a repository.  
