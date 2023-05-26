@@ -20,4 +20,7 @@ class RaspiController:
         return ip
     
     def get_local_subnet(self, iface):
+        if iface == None:
+            iface = 'eth0' or 'wlan0'
+            
         return socket.inet_ntoa(fcntl.ioctl(socket.socket(socket.AF_INET, socket.SOCK_DGRAM), 35099, struct.pack(b'256s', iface.encode()))[20:24])
