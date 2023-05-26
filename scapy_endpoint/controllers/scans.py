@@ -1,19 +1,8 @@
-from timeit import default_timer as timer
 from cement import Controller, ex
-from scapy.all import sr, srp, ARP, Ether, IP, TCP
+from scapy.all import ARP, Ether, IP, TCP
 
+from scapy_endpoint.my_commands.scan_controller import ScanController
 
-def sr_handler(pkt):
-        try:
-            start = timer()
-            ans, unans = sr(pkt, timeout=5)
-            end = timer()
-        except Exception as e:
-            print(e)
-
-        delta = end - start
-        print(f'Scan took {delta} seconds to complete.')
-        return ans, unans
 
 class Scans(Controller):
     class Meta:
@@ -31,7 +20,7 @@ class Scans(Controller):
     )
     def ack_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = sr_handler(IP(dst=target)/TCP(dport=(1,1024),flags="A"))
+        ans, unans = ScanController.layer_3_sr(IP(dst=target)/TCP(dport=(1,1024),flags="A"))
 
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
@@ -47,7 +36,7 @@ class Scans(Controller):
     )
     def xmas_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = sr_handler(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"))
+        ans, unans = ScanController.layer_3_sr(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"))
 
         for s,r in ans:
             if s[TCP].dport is not None:
@@ -63,7 +52,7 @@ class Scans(Controller):
     )
     def protocol_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = sr_handler(IP(dst=target,proto=(0,255))/"SCAPY")
+        ans, unans = ScanController.layer_3_sr(IP(dst=target,proto=(0,255))/"SCAPY")
         
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
 
@@ -77,9 +66,6 @@ class Scans(Controller):
     )
     def ip_scan(self):
         target_network = self.app.pargs.target_network
-        try:
-            ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target_network), timeout=3)
-        except Exception as e:
-            print(e)
+        ans, unans = ScanController.layer_2_sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target_network))
 
         ans.summary(lambda s,r: r.sprintf("%Ether.src% - %ARP.psrc%"))
