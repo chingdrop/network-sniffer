@@ -1,7 +1,7 @@
 from cement import Controller, ex
 from scapy.all import ARP, Ether, IP, TCP
 
-from scapy_endpoint.my_commands.scan_controller import ScanController
+from scapy_endpoint.my_commands.sr_controller import SRController
 
 
 class Scans(Controller):
@@ -20,7 +20,7 @@ class Scans(Controller):
     )
     def ack_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = ScanController.layer_3_sr(IP(dst=target)/TCP(dport=(1,1024),flags="A"))
+        ans, unans = SRController.layer_3_sr(IP(dst=target)/TCP(dport=(1,1024),flags="A"))
 
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
@@ -36,7 +36,7 @@ class Scans(Controller):
     )
     def xmas_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = ScanController.layer_3_sr(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"))
+        ans, unans = SRController.layer_3_sr(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"))
 
         for s,r in ans:
             if s[TCP].dport is not None:
@@ -52,7 +52,7 @@ class Scans(Controller):
     )
     def protocol_scan(self):
         target = self.app.pargs.target_host
-        ans, unans = ScanController.layer_3_sr(IP(dst=target,proto=(0,255))/"SCAPY")
+        ans, unans = SRController.layer_3_sr(IP(dst=target,proto=(0,255))/"SCAPY")
         
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
 
@@ -66,6 +66,6 @@ class Scans(Controller):
     )
     def ip_scan(self):
         target_network = self.app.pargs.target_network
-        ans, unans = ScanController.layer_2_sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target_network))
+        ans, unans = SRController.layer_2_sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target_network))
 
         ans.summary(lambda s,r: r.sprintf("%Ether.src% - %ARP.psrc%"))
