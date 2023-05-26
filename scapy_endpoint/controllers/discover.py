@@ -1,6 +1,9 @@
 from cement import Controller, ex
 from scapy.all import sr, ARP, Ether, IP, ICMP
 
+from scapy_endpoint.my_commands.host_discovery import HostDiscovery
+from scapy_endpoint.my_commands.raspi_controller import RaspiController
+
 
 class Discover(Controller):
     class Meta:
@@ -9,35 +12,30 @@ class Discover(Controller):
         stacked_on = 'base'
 
     @ex(
-        help='starts an ICMP ping',
+        help='starts an ARP ping to discover live hosts',
         arguments=[
-            (['target_range'], 
-             {'help': 'target IP range',
+            (['iface'], 
+             {'help': 'target interface',
               'action': 'store'})
         ],
     )
-    def icmp_ping(self):
-        ip_range = self.app.pargs.target_range
-        try:
-            ans, unans = sr(IP(dst=ip_range)/ICMP())
-        except Exception as e:
-            print(e.message, e.args)
-
-        ans.summary(lambda s,r: r.sprintf("%IP.src% is alive"))
+    def quick_discover(self):
+        iface = self.app.pargs.iface
+        network_ip = RaspiController.get_network_ip(iface)
+        arp_list = HostDiscovery.arp_ping(str(network_ip))
 
     @ex(
-        help='starts an ARP ping',
+        help='starts an ARP ping to discover live hosts',
         arguments=[
-            (['target_host'], 
-             {'help': 'target host IP',
+            (['iface'], 
+             {'help': 'target interface',
               'action': 'store'})
         ],
     )
-    def arp_ping(self):
-        target = self.app.pargs.target_host
-        try:
-            ans, unans = sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target),timeout=2)
-        except Exception as e:
-            print(e.message, e.args)
-            
-        ans.summary(lambda s,r: r.sprintf("%Ether.src% | %ARP.psrc%"))
+    def full_discover(self):
+        iface = self.app.pargs.iface
+        network_ip = RaspiController.get_network_ip(iface)
+        arp_list = HostDiscovery.arp_ping(str(network_ip))
+        icmp_list = HostDiscovery.icmp_ping(str(network_ip))
+        tcp_list = HostDiscovery.tcp_ping(str(network_ip))
+        udp_list = HostDiscovery.udp_ping(str(network_ip))
