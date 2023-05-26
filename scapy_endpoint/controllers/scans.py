@@ -5,6 +5,7 @@ from scapy_endpoint.my_commands.sr_controller import SRController
 
 
 class Scans(Controller):
+    
     class Meta:
         label = 'scans'
         stacked_type = 'embedded'

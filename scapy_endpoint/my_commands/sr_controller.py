@@ -1,5 +1,5 @@
 from timeit import default_timer as timer
-from scapy.all import sr, srp, ARP, Ether
+from scapy.all import sr, srp
 
 
 class SRController:
