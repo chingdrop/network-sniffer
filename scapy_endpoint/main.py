@@ -4,7 +4,7 @@ from cement.core.exc import CaughtSignal
 from .core.exc import ScapyEndpointError
 
 from .controllers.base import Base
-from .controllers.scans import Scans
+from .controllers.scans import LANEnumeration
 from .controllers.sniff import Sniff
 from .controllers.resolver import Resolver
 from .controllers.discover import Discover
@@ -48,7 +48,7 @@ class ScapyEndpoint(App):
         # register handlers
         handlers = [
             Base,
-            Scans,
+            LANEnumeration,
             Sniff,
             Resolver,
             Discover,
