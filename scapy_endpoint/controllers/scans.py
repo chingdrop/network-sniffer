@@ -37,28 +37,37 @@ class LocalNetwork:
 class Scans:
 
     def ack_scan(self, target):
+        port_list = []
         ans, unans = sr(IP(dst=target)/TCP(dport=(1,1024),flags="A"), timeout=5, verbose=0)
 
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
+                port_list.append(s[TCP].dport)
                 print(f"Port {s[TCP].dport} is unfiltered.")
+        
+        return port_list
 
     def xmas_scan(self, target):
+        port_list = []
         ans, unans = sr(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"), timeout=5, verbose=0)
 
         for s,r in ans:
             if s[TCP].dport is not None:
+                port_list.append(s[TCP].dport)
                 print(f"{s[TCP].dport} is open.")
 
+        return port_list
+
     def protocol_scan(self, target):
-        ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY")
+        ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY", timeout=3, verbose=0)
         
-        ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."), timeout=3, verbose=0)
+        ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
     
 
 class Pings:
 
     def arp_ping(self, target):
+        host_list = []
         pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target)
         print("Starting an ARP scan with this packet:\n")
         print(pkt.show())
@@ -66,13 +75,7 @@ class Pings:
         print()
 
         ans, unans = srp(pkt, timeout=3, verbose=0)
-
         ans.summary(lambda s,r: r.sprintf("%Ether.src% - %ARP.psrc%"))
-        return ans, unans
-    
-    def quick_host_discovery(self, target):
-        host_list = []
-        ans, unans = self.arp_ping(target)
 
         for s,r in ans:
             host = {
@@ -80,6 +83,7 @@ class Pings:
                     "IP": r[IP].dst
                 }
             host_list.append(host)
+
         return host_list
 
 
@@ -101,6 +105,6 @@ class LANEnumeration(Controller):
     def quick_enumeration(self):
         iface = self.app.pargs.iface
         lan = LocalNetwork.get_network_ip(iface)
-        live_hosts = Pings.quick_host_discovery(str(lan))
+        live_hosts = Pings.arp_ping(str(lan))
 
             
