@@ -29,31 +29,28 @@ class LocalNetwork:
 
     def get_network_ip(self, iface):
         ip = self.get_local_ip()
-        subnet = get_local_subnet(iface)
+        subnet = self.get_local_subnet(iface)
         network = ip[:ip.rfind('.')+1] + '0'
         return IPv4Network(network + '/' + subnet)
 
 
 class Scans:
 
-    def ack_scan(self):
-        target = self.app.pargs.target_host
+    def ack_scan(self, target):
         ans, unans = sr(IP(dst=target)/TCP(dport=(1,1024),flags="A"), timeout=5, verbose=0)
 
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
                 print(f"Port {s[TCP].dport} is unfiltered.")
 
-    def xmas_scan(self):
-        target = self.app.pargs.target_host
+    def xmas_scan(self, target):
         ans, unans = sr(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"), timeout=5, verbose=0)
 
         for s,r in ans:
             if s[TCP].dport is not None:
                 print(f"{s[TCP].dport} is open.")
 
-    def protocol_scan(self):
-        target = self.app.pargs.target_host
+    def protocol_scan(self, target):
         ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY")
         
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."), timeout=3, verbose=0)
