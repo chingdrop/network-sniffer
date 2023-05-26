@@ -1,7 +1,7 @@
 from cement import Controller, ex
 from scapy.all import ARP, Ether, IP, TCP
 
-from scapy_endpoint.my_commands.sr_controller import SRController
+from commands.sr_controller import SRController
 
 
 class Scans(Controller):

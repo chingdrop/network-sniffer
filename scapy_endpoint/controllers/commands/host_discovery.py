@@ -1,6 +1,6 @@
 from scapy.all import ARP, Ether, IP, ICMP, TCP, UDP
 
-from scapy_endpoint.my_commands.sr_controller import SRController
+from commands.sr_controller import SRController
 
 
 class HostDiscovery:

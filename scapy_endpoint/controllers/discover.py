@@ -1,8 +1,8 @@
 from cement import Controller, ex
 from scapy.all import sr, ARP, Ether, IP, ICMP
 
-from scapy_endpoint.my_commands.host_discovery import HostDiscovery
-from scapy_endpoint.my_commands.raspi_controller import RaspiController
+from commands.host_discovery import HostDiscovery
+from commands.raspi_controller import RaspiController
 
 
 class Discover(Controller):
