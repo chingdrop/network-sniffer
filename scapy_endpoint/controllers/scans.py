@@ -4,7 +4,7 @@ import struct
 from ipaddress import IPv4Address, IPv4Network
 
 from cement import Controller, ex
-from scapy.all import sr, srp, ARP, Ether, IP, TCP
+from scapy.all import sr, srp, ARP, Ether, hexdump, IP, TCP
 
 
 class LocalNetwork:
@@ -20,11 +20,9 @@ class LocalNetwork:
             ip = '127.0.0.1'
         finally:
             s.close()
-        return IPv4Address(ip)
+        return ip
 
     def get_local_subnet(self, iface):
-        if iface == None:
-            iface = 'eth0' or 'wlan0'
         return socket.inet_ntoa(fcntl.ioctl(socket.socket(socket.AF_INET, socket.SOCK_DGRAM), 35099, struct.pack(b'256s', iface.encode()))[20:24])
 
     def get_network_ip(self, iface):
@@ -71,7 +69,7 @@ class Pings:
         pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target)
         print("Starting an ARP scan with this packet:\n")
         print(pkt.show())
-        print(pkt.hexdump())
+        print(hexdump(pkt))
         print()
 
         ans, unans = srp(pkt, timeout=3, verbose=0)
@@ -80,7 +78,7 @@ class Pings:
         for s,r in ans:
             host = {
                     "MAC": r[Ether].dst,
-                    "IP": r[IP].dst
+                    "IP": r[ARP].psrc
                 }
             host_list.append(host)
 
@@ -95,7 +93,7 @@ class LANEnumeration(Controller):
         stacked_on = 'base'
 
     @ex(
-        help='starts an ACK scan for ports 1-1024',
+        help='poop',
         arguments=[
             (['iface'], 
              {'help': 'interface connected to LAN',
@@ -104,7 +102,5 @@ class LANEnumeration(Controller):
     )
     def quick_enumeration(self):
         iface = self.app.pargs.iface
-        lan = LocalNetwork.get_network_ip(iface)
-        live_hosts = Pings.arp_ping(str(lan))
-
-            
+        lan = LocalNetwork().get_network_ip(iface)
+        live_hosts = Pings().arp_ping(str(lan))
