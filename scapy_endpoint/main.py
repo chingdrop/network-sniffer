@@ -7,7 +7,7 @@ from .controllers.base import Base
 from .controllers.scans import Scans
 from .controllers.sniff import Sniff
 from .controllers.resolver import Resolver
-from .controllers.ping import Ping
+from .controllers.discover import Discover
 
 # configuration defaults
 CONFIG = init_defaults('scapy_endpoint')
@@ -51,7 +51,7 @@ class ScapyEndpoint(App):
             Scans,
             Sniff,
             Resolver,
-            Ping,
+            Discover,
         ]
 
 

@@ -2,9 +2,9 @@ from cement import Controller, ex
 from scapy.all import sr, ARP, Ether, IP, ICMP
 
 
-class Ping(Controller):
+class Discover(Controller):
     class Meta:
-        label = 'ping'
+        label = 'discover'
         stacked_type = 'embedded'
         stacked_on = 'base'
 
