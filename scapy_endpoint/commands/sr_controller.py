@@ -8,6 +8,8 @@ class SRController:
         pass
 
     def layer_2_sr(self, pkt):
+        print(pkt.show())
+        print(pkt.hexdump())
         try:
             start = timer()
             ans, unans = srp(pkt, timeout=5, verbose=0)
