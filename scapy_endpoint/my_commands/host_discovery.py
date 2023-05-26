@@ -7,13 +7,14 @@ from scapy_endpoint.my_commands.raspi_controller import RaspiController
 
 class HostDiscovery:
 
-    def __init__(self) -> None:
+    def get_raspi_ip(self):
         ip = RaspiController.get_local_ip()
-        self.local_ip = IPv4Address(ip)
-
+        return IPv4Address(ip)
+    
+    def get_network_ip(self):
         network = ip[:ip.rfind('.')+1] + '0'
         subnet = RaspiController.get_local_subnet()
-        self.network_ip = IPv4Network(network + '/' + subnet)
+        return IPv4Network(network + '/' + subnet)
 
     def arp_ping(self, target):
         host_list = []
