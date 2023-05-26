@@ -6,31 +6,33 @@ from ipaddress import IPv4Address, IPv4Network
 from cement import Controller, ex
 from scapy.all import sr, srp, ARP, Ether, IP, TCP
 
-from .commands.sr_controller import SRController
 
-def get_local_ip(self):
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.settimeout(0)
-    try:
-        # doesn't have to be reachable
-        s.connect(('1.1.1.1', 1))
-        ip = s.getsockname()[0]
-    except Exception:
-        ip = '127.0.0.1'
-    finally:
-        s.close()
-    return IPv4Address(ip)
+class LocalNetwork:
 
-def get_local_subnet(self, iface):
-    if iface == None:
-        iface = 'eth0' or 'wlan0'
-    return socket.inet_ntoa(fcntl.ioctl(socket.socket(socket.AF_INET, socket.SOCK_DGRAM), 35099, struct.pack(b'256s', iface.encode()))[20:24])
+    def get_local_ip(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.settimeout(0)
+        try:
+            # doesn't have to be reachable
+            s.connect(('1.1.1.1', 1))
+            ip = s.getsockname()[0]
+        except Exception:
+            ip = '127.0.0.1'
+        finally:
+            s.close()
+        return IPv4Address(ip)
 
-def get_network_ip(self, iface):
-    ip = self.get_local_ip()
-    subnet = get_local_subnet(iface)
-    network = ip[:ip.rfind('.')+1] + '0'
-    return IPv4Network(network + '/' + subnet)
+    def get_local_subnet(self, iface):
+        if iface == None:
+            iface = 'eth0' or 'wlan0'
+        return socket.inet_ntoa(fcntl.ioctl(socket.socket(socket.AF_INET, socket.SOCK_DGRAM), 35099, struct.pack(b'256s', iface.encode()))[20:24])
+
+    def get_network_ip(self, iface):
+        ip = self.get_local_ip()
+        subnet = get_local_subnet(iface)
+        network = ip[:ip.rfind('.')+1] + '0'
+        return IPv4Network(network + '/' + subnet)
+
 
 class Scans:
 
@@ -56,11 +58,33 @@ class Scans:
         
         ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."), timeout=3, verbose=0)
     
-    def ip_scan(self):
-        target_network = self.app.pargs.target_network
-        ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target_network), timeout=3, verbose=0)
+
+class Pings:
+
+    def arp_ping(self, target):
+        pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target)
+        print("Starting an ARP scan with this packet:\n")
+        print(pkt.show())
+        print(pkt.hexdump())
+        print()
+
+        ans, unans = srp(pkt, timeout=3, verbose=0)
 
         ans.summary(lambda s,r: r.sprintf("%Ether.src% - %ARP.psrc%"))
+        return ans, unans
+    
+    def quick_host_discovery(self, target):
+        host_list = []
+        ans, unans = self.arp_ping(target)
+
+        for s,r in ans:
+            host = {
+                    "MAC": r[Ether].dst,
+                    "IP": r[IP].dst
+                }
+            host_list.append(host)
+        return host_list
+
 
 class LANEnumeration(Controller):
     
@@ -72,9 +96,14 @@ class LANEnumeration(Controller):
     @ex(
         help='starts an ACK scan for ports 1-1024',
         arguments=[
-            (['target_host'], 
-             {'help': 'target host IP',
+            (['iface'], 
+             {'help': 'interface connected to LAN',
               'action': 'store'})
         ],
     )
     def quick_enumeration(self):
+        iface = self.app.pargs.iface
+        lan = LocalNetwork.get_network_ip(iface)
+        live_hosts = Pings.quick_host_discovery(str(lan))
+
+            
