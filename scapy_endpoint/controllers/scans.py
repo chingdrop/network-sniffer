@@ -78,21 +78,28 @@ class Pings:
 
     def arp_ping(self, target):
         host_list = []
-        pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target)
-        print("Starting an ARP scan with this packet:\n")
-        print(pkt.show())
-        print(hexdump(pkt))
-        print()
-
-        ans, unans = srp(pkt, timeout=3, verbose=0)
-        ans.summary(lambda s,r: r.sprintf("%ARP.psrc% - %Ether.src%"))
+        ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target), timeout=3, verbose=0)
 
         for s,r in ans:
+            hostname = ''
+            try:
+                hostname = socket.gethostbyaddr(r[ARP].psrc)[0]
+            except socket.herror as e:
+                if e.errno == 1:
+                    hostname = 'N/a'
+                    print(f'{r[ARP].psrc} has no hostname record...')
+                elif e.errno == 2:
+                    print('DNS server is unavailable...')
+                else:
+                    print('Unknown Error')
+
             host = {
+                    "HOSTNAME": hostname,
                     "MAC": r[Ether].dst,
                     "IP": r[ARP].psrc
                 }
             host_list.append(host)
+            print(f'{r[Ether].dst} : {r[ARP].psrc} : {hostname}')
 
         if host_list == None:
             print(f'{target} has no active hosts listening.')
@@ -107,7 +114,7 @@ class LANEnumeration(Controller):
         stacked_on = 'base'
 
     @ex(
-        help='poop',
+        help='enumerates possible targets on the detected LAN.',
         arguments=[
             (['iface'], 
              {'help': 'interface connected to LAN',
