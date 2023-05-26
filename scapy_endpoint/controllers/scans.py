@@ -41,8 +41,10 @@ class Scans:
         for s,r in ans:
             if s[TCP].dport == r[TCP].sport:
                 port_list.append(s[TCP].dport)
-                print(f"Port {s[TCP].dport} is unfiltered.")
+                print(f"{target} : Port {s[TCP].dport} is unfiltered.")
         
+        if port_list == None:
+            print(f'{target} has no unfiltered ports.')
         return port_list
 
     def xmas_scan(self, target):
@@ -52,14 +54,24 @@ class Scans:
         for s,r in ans:
             if s[TCP].dport is not None:
                 port_list.append(s[TCP].dport)
-                print(f"{s[TCP].dport} is open.")
+                print(f"{target} : {s[TCP].dport} is open.")
 
+        if port_list == None:
+            print(f'{target} has no ports open.')
         return port_list
 
     def protocol_scan(self, target):
+        port_list = []
         ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY", timeout=3, verbose=0)
         
-        ans.summary(lambda s,r: r.sprintf("%IP.proto% is listening."))
+        ans.summary(lambda s,r: r.sprintf("%IP.src% : %IP.proto% is listening."))
+
+        for s,r in ans:
+            port_list.append(r[IP].proto)
+
+        if port_list == None:
+            print(f'{target} has no ports listening.')
+        return port_list
     
 
 class Pings:
@@ -73,7 +85,7 @@ class Pings:
         print()
 
         ans, unans = srp(pkt, timeout=3, verbose=0)
-        ans.summary(lambda s,r: r.sprintf("%Ether.src% - %ARP.psrc%"))
+        ans.summary(lambda s,r: r.sprintf("%ARP.psrc% - %Ether.src%"))
 
         for s,r in ans:
             host = {
@@ -82,6 +94,8 @@ class Pings:
                 }
             host_list.append(host)
 
+        if host_list == None:
+            print(f'{target} has no active hosts listening.')
         return host_list
 
 
@@ -102,5 +116,17 @@ class LANEnumeration(Controller):
     )
     def quick_enumeration(self):
         iface = self.app.pargs.iface
+        target_list = []
+        scans = Scans()
         lan = LocalNetwork().get_network_ip(iface)
         live_hosts = Pings().arp_ping(str(lan))
+        print(f'{len(live_hosts)} found, moving to scan the ports of the host.\n')
+
+        for host in live_hosts:
+            ack_ports = scans.ack_scan(host["IP"])
+            xmas_ports = scans.xmas_scan(host["IP"])
+            proto_ports = scans.protocol_scan(host["IP"])
+
+            if ack_ports or xmas_ports or proto_ports:
+                target_list.append(host)
+                print(f'{host["IP"]} : {host["MAC"]} could be a potential target.\n')
