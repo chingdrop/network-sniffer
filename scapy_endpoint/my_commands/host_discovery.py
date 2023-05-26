@@ -14,3 +14,29 @@ class HostDiscovery:
         network = ip[:ip.rfind('.')+1] + '0'
         subnet = RaspiController.get_local_subnet()
         self.network_ip = IPv4Network(network + '/' + subnet)
+
+    def arp_ping(self, target):
+        host_list = []
+        ans, unans = SRController.layer_2_sr(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target))
+        for s,r in ans:
+                host = {
+                    "MAC": r[Ether].dst,
+                    "IP": r[ARP].psrc
+                }
+                host_list.append(host)
+            
+        return host_list
+    
+    def icmp_ping(self, target):
+        host_list = []
+        ans, unans = SRController.layer_3_sr(IP(dst=target)/ICMP())
+        for s,r in ans:
+                host = {
+                    "MAC": r[Ether].dst,
+                    "IP": r[IP].dst
+                }
+                host_list.append(host)
+            
+        return host_list
+    
+    
