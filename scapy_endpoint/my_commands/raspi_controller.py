@@ -1,6 +1,8 @@
 import socket
 import fcntl
 import struct
+from ipaddress import IPv4Address, IPv4Network
+
 
 class RaspiController:
 
@@ -17,10 +19,16 @@ class RaspiController:
         finally:
             s.close()
 
-        return ip
+        return IPv4Address(ip)
     
     def get_local_subnet(self, iface):
         if iface == None:
             iface = 'eth0' or 'wlan0'
-            
+
         return socket.inet_ntoa(fcntl.ioctl(socket.socket(socket.AF_INET, socket.SOCK_DGRAM), 35099, struct.pack(b'256s', iface.encode()))[20:24])
+    
+    def get_network_ip(self, iface):
+        ip = self.get_local_ip()
+        subnet = RaspiController.get_local_subnet(iface)
+        network = ip[:ip.rfind('.')+1] + '0'
+        return IPv4Network(network + '/' + subnet)
