@@ -1,10 +1,10 @@
 import socket
 import fcntl
 import struct
-from ipaddress import IPv4Address, IPv4Network
+from ipaddress import IPv4Network
 
 from cement import Controller, ex
-from scapy.all import sr, srp, ARP, Ether, hexdump, IP, TCP
+from scapy.all import sr, srp, ARP, Ether, hexdump, IP, ICMP, TCP
 
 
 class LocalNetwork:
@@ -34,106 +34,85 @@ class LocalNetwork:
 
 class Scans:
 
-    def ack_scan(self, target):
-        port_list = []
-        ans, unans = sr(IP(dst=target)/TCP(dport=(1,1024),flags="A"), timeout=5, verbose=0)
+    def ack_scan(self, target, ports):
+        open_ports = [port for port in ports if not sr(IP(dst=target)/TCP(dport=port, flags="A"), timeout=5, verbose=0)[0].haslayer(ICMP)]
+        if open_ports:
+            print(f"{target}: {' '.join(map(str, open_ports))} is unfiltered.")
+        else:
+            print(f"{target} has no unfiltered ports.")
+        return open_ports
 
-        for s,r in ans:
-            if s[TCP].dport == r[TCP].sport:
-                port_list.append(s[TCP].dport)
-                print(f"{target} : Port {s[TCP].dport} is unfiltered.")
-        
-        if port_list == None:
-            print(f'{target} has no unfiltered ports.')
-        return port_list
-
-    def xmas_scan(self, target):
-        port_list = []
-        ans, unans = sr(IP(dst=target)/TCP(dport=(1,1024),flags="FPU"), timeout=5, verbose=0)
-
-        for s,r in ans:
-            if s[TCP].dport is not None:
-                port_list.append(s[TCP].dport)
-                print(f"{target} : {s[TCP].dport} is open.")
-
-        if port_list == None:
-            print(f'{target} has no ports open.')
-        return port_list
+    def xmas_scan(self, target, ports):
+        open_ports = [port for port in ports if not sr(IP(dst=target)/TCP(dport=port, flags="FPU"), timeout=5, verbose=0)[0].haslayer(ICMP)]
+        if open_ports:
+            print(f"{target}: {' '.join(map(str, open_ports))} is open.")
+        else:
+            print(f"{target} has no open ports.")
+        return open_ports
 
     def protocol_scan(self, target):
-        port_list = []
-        ans, unans = sr(IP(dst=target,proto=(0,255))/"SCAPY", timeout=3, verbose=0)
-        
+        open_protos = []
+        ans, unans = sr(IP(dst=target,proto=[i for i in range(256)])/"SCAPY", timeout=3, verbose=0)
         ans.summary(lambda s,r: r.sprintf("%IP.src% : %IP.proto% is listening."))
-
         for s,r in ans:
-            port_list.append(r[IP].proto)
+            open_protos.append(r[IP].proto)
+        if open_protos:
+            print(f"{target}: {' '.join(map(str, open_protos))} is listening.")
+        else:
+            print(f"{target} has no protocols listening.")
+        return open_protos
 
-        if port_list == None:
-            print(f'{target} has no ports listening.')
-        return port_list
-    
 
 class Pings:
+    def arp_ping(self, targets):
+        host_list = [
+            {
+                "HOSTNAME": socket.gethostbyaddr(r[ARP].psrc)[0] if not isinstance(socket.gethostbyaddr(r[ARP].psrc)[0], socket.herror) else '',
+                "MAC": r[Ether].dst,
+                "IP": r[ARP].psrc
+            }
+            for target in targets
+            for s,r in srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target), timeout=3, verbose=0)[0]
+        ]
+        for host in host_list:
+            print(f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}')
 
-    def arp_ping(self, target):
-        host_list = []
-        ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target), timeout=3, verbose=0)
-
-        for s,r in ans:
-            hostname = ''
-            try:
-                hostname = socket.gethostbyaddr(r[ARP].psrc)[0]
-            except socket.herror as e:
-                if e.errno == 1:
-                    hostname = 'N/a'
-                    print(f'{r[ARP].psrc} has no hostname record...')
-                elif e.errno == 2:
-                    print('DNS server is unavailable...')
-                else:
-                    print('Unknown Error')
-
-            host = {
-                    "HOSTNAME": hostname,
-                    "MAC": r[Ether].dst,
-                    "IP": r[ARP].psrc
-                }
-            host_list.append(host)
-            print(f'{r[Ether].dst} : {r[ARP].psrc} : {hostname}')
-
-        if host_list == None:
-            print(f'{target} has no active hosts listening.')
+        if not host_list:
+            print(f'No active hosts found.')
         return host_list
 
 
 class LANEnumeration(Controller):
-    
     class Meta:
         label = 'lan_enumeration'
         stacked_type = 'embedded'
         stacked_on = 'base'
 
-    @ex(
-        help='enumerates possible targets on the detected LAN.',
-        arguments=[
-            (['iface'], 
-             {'help': 'interface connected to LAN',
-              'action': 'store'})
-        ],
-    )
+    @ex(help='Enumerates possible targets on the detected LAN.',
+         arguments=[(['iface'], {'help': 'Interface connected to LAN.','action': 'store'})])
     def quick_enumeration(self):
-        iface = self.app.pargs.iface
-        target_list = []
-        scans = Scans()
-        lan = LocalNetwork().get_network_ip(iface)
-        live_hosts = Pings().arp_ping(str(lan))
-        print(f'{len(live_hosts)} found, moving to scan the ports of the host.\n')
+        try:
+            iface = self.app.pargs.iface
+            target_list = []
+            lan = LocalNetwork().get_network_ip(iface)
+            live_hosts = Pings().arp_ping(str(lan))
 
-        for host in live_hosts:
-            ack_ports = scans.ack_scan(host["IP"])
-            xmas_ports = scans.xmas_scan(host["IP"])
-            proto_ports = scans.protocol_scan(host["IP"])
+            if not live_hosts:
+                raise Exception('No live hosts found.')
+            
+            print(f'{len(live_hosts)} found, moving to scan the ports of the host.\n')
 
-            if ack_ports or xmas_ports or proto_ports:
-                target_list.append(host)
-                print(f'{host["IP"]} : {host["MAC"]} could be a potential target.\n')
+            scans = Scans()
+            for host in live_hosts:
+                ack_ports = scans.ack_scan(host["IP"])
+                xmas_ports = scans.xmas_scan(host["IP"])
+                proto_ports = scans.protocol_scan(host["IP"])
+
+                if ack_ports or xmas_ports or proto_ports:
+                    target_list.append(host)
+                    print(f'{host["IP"]} : {host["MAC"]} could be a potential target.\n')
+        except Exception as e:
+            print(f"An error has occurred during LAN enumeration: {str(e)}")
+            return []
+
+        return target_list 
