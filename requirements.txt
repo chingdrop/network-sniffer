@@ -3,3 +3,4 @@ cement[jinja2]
 cement[yaml]
 cement[colorlog]
 scapy==2.5.0
+pytest==7.3.1
