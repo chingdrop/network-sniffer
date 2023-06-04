@@ -19,7 +19,7 @@ class Pings:
                 hostname = ''
             host_list.append({
                 "HOSTNAME": hostname,
-                "MAC": r[Ether].dst,
+                "MAC": r[Ether].src,
                 "IP": r[ARP].psrc
             })
         return host_list
