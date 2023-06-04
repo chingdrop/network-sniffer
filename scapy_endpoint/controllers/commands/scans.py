@@ -5,7 +5,6 @@ class Scans:
 
     def ack_scan(self, target, port=80):
         src_port = RandShort()
-
         try:
             ans = sr1(IP(dst=target)/TCP(sport=src_port, dport=port,flags="A", seq=12345), timeout=3, verbose=0)
             if ans:
@@ -21,10 +20,7 @@ class Scans:
             print(e)
 
     def xmas_scan(self, target, ports):
-        open_ports = []
-        filtered_ports = []
         src_port = RandShort()
-
         try:
             ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0)
             open_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == 0x14]
@@ -35,8 +31,6 @@ class Scans:
             print(e)
 
     def protocol_scan(self, target):
-        open_protos = []
-
         try:
             ans, unans = sr(IP(dst=target, proto=[i for i in range(256)])/"SCAPY", timeout=3, verbose=0)
             open_protos = [s[IP].proto for s,r in ans]

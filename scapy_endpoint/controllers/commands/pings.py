@@ -15,12 +15,10 @@ class Pings:
 
         for s,r in ans:
             ip_addr = r[ARP].psrc
-
             try:
                 hostname = socket.gethostbyaddr(ip_addr)[0]
             except socket.herror:
                 hostname = ''
-
             host_list.append({
                 "HOSTNAME": hostname,
                 "MAC": r[Ether].dst,
