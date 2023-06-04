@@ -20,6 +20,10 @@ class Pings:
             host_list.append({
                 "HOSTNAME": hostname,
                 "MAC": r[Ether].src,
-                "IP": r[ARP].psrc
-            })
+                "IP": r[ARP].psrc})
+        
+        if host_list:
+            print('\n'.join(f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}' for host in host_list))
+        else:
+            print(f'No active hosts found.')
         return host_list
