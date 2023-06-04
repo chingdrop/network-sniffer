@@ -25,7 +25,6 @@ class LANEnumeration(Controller):
         target_list = []
         scans = Scans()
         lan = LocalNetwork().get_network_ip(iface)
-
         live_hosts = Pings().arp_ping(str(lan))
 
         for host in live_hosts:
@@ -40,7 +39,7 @@ class LANEnumeration(Controller):
             print('\nProtocol Scan...')
             open_protos = scans.protocol_scan(host["IP"])
 
-            if ack_port or xmas_open or open_protos:
+            if ack_port or xmas_open or xmas_filtered or open_protos:
                 target_list.append(host)
         
         print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in target_list))
