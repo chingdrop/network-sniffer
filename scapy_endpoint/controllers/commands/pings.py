@@ -24,5 +24,4 @@ class Pings:
                 "MAC": r[Ether].dst,
                 "IP": ip_addr
             })
-        
         return host_list

@@ -15,7 +15,6 @@ class Scans:
             else:
                 res = True
             return res
-        
         except Exception as e:
             print(e)
 
@@ -26,7 +25,6 @@ class Scans:
             open_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == 0x14]
             filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and r[ICMP].type == 3 and r[ICMP].code in [1, 2, 3, 9, 10, 13]]
             return open_ports, filtered_ports
-        
         except Exception as e:
             print(e)
 
@@ -35,6 +33,5 @@ class Scans:
             ans, unans = sr(IP(dst=target, proto=[i for i in range(256)])/"SCAPY", timeout=3, verbose=0)
             open_protos = [s[IP].proto for s,r in ans]
             return open_protos
-        
         except Exception as e:
             print(e)
