@@ -4,7 +4,7 @@ from cement.core.exc import CaughtSignal
 from .core.exc import ScapyEndpointError
 
 from .controllers.base import Base
-from .controllers.scans import LANEnumeration
+from .controllers.enumeration import LANEnumeration
 from .controllers.sniff import Sniff
 from .controllers.resolver import Resolver
 from .controllers.discover import Discover
