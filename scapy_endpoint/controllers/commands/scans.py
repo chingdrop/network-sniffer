@@ -1,4 +1,4 @@
-from scapy.all import sr, RandShort, ICMP, IP, TCP
+from scapy.all import sr, sr1, RandShort, ICMP, IP, TCP
 
 
 class Scans:
@@ -7,11 +7,11 @@ class Scans:
         src_port = RandShort()
 
         try:
-            resp = sr(IP(dst=target)/TCP(sport=src_port, dport=port,flags="A", seq=12345), timeout=3, verbose=0)
-            if resp:
-                if resp.getlayer(TCP).flags == 0x4:
+            ans = sr1(IP(dst=target)/TCP(sport=src_port, dport=port,flags="A", seq=12345), timeout=3, verbose=0)
+            if ans:
+                if ans.haslayer(TCP) and ans.getlayer(TCP).flags == 0x4:
                     res = False
-                elif int(resp.getlayer(ICMP).type) == 3 and int(resp.getlayer(ICMP).code) in [1,2,3,9,10,13]:
+                elif ans.haslayer(ICMP) and int(ans.getlayer(ICMP).type) == 3 and int(ans.getlayer(ICMP).code) in [1,2,3,9,10,13]:
                     res = True
             else:
                 res = True
@@ -27,12 +27,8 @@ class Scans:
 
         try:
             ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0)
-            if ans:
-                for s,r in ans:
-                    if r[TCP].flags == 0x14:
-                        open_ports.append(s[TCP].dport)
-                    elif r[ICMP].type == 3 and r[ICMP].code in [1,2,3,9,10,13]:
-                        filtered_ports.append(s[TCP].dport)
+            open_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == 0x14]
+            filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and r[ICMP].type == 3 and r[ICMP].code in [1, 2, 3, 9, 10, 13]]
             return open_ports, filtered_ports
         
         except Exception as e:
@@ -43,9 +39,7 @@ class Scans:
 
         try:
             ans, unans = sr(IP(dst=target, proto=[i for i in range(256)])/"SCAPY", timeout=3, verbose=0)
-            if ans:
-                for s,r in ans:
-                    open_protos.append(r[IP].proto)
+            open_protos = [s[IP].proto for s,r in ans]
             return open_protos
         
         except Exception as e:
