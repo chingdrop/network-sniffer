@@ -4,7 +4,7 @@ from scapy.all import srp, ARP, Ether
 
 class Pings:
 
-    def arp_ping(self, target):
+    def arp_ping(self, target, verbose=True):
         host_list = []
         # This definitely could be done better, but I don't want to nest try/excepts
         try:
@@ -22,8 +22,9 @@ class Pings:
                 "MAC": r[Ether].src,
                 "IP": r[ARP].psrc})
         
-        if host_list:
-            print('\n'.join(f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}' for host in host_list))
-        else:
-            print(f'No active hosts found.')
+        if verbose:
+            message = '\n'.join(f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}' for host in host_list) \
+                                if host_list else 'No active hosts found.'
+            print(message)
+        
         return host_list
