@@ -54,13 +54,11 @@ class LANEnumeration(Controller):
             print('\nProtocol Scan...')
             open_protos = scans.protocol_scan(host["IP"])
             if open_protos:
-                for proto in open_protos:
-                    print(f'Protocol {proto} is listening')
+                print('\n'.join(f'Protocol {proto} is listening' for proto in open_protos))
             else:
                 print("No protocols are listening")
 
             if ack_port or xmas_open or open_protos:
                 target_list.append(host)
-
-        for target in target_list:
-            print(f'{target["IP"]} : {target["MAC"]} could be a potential target')
+        
+        print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in target_list))
