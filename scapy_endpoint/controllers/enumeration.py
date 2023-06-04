@@ -13,7 +13,7 @@ class LANEnumeration(Controller):
         stacked_on = 'base'
 
     @ex(
-        help='enumerates possible targets on the detected LAN.',
+        help='enumerates possible targets on the detected LAN',
         arguments=[
             (['iface'], 
              {'help': 'interface connected to LAN',
@@ -28,8 +28,7 @@ class LANEnumeration(Controller):
 
         live_hosts = Pings().arp_ping(str(lan))
         if live_hosts:
-            for host in live_hosts:
-                print(f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}')
+            print('\n'.join(f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}' for host in live_hosts))
         else:
             print(f'No active hosts found.')
 
@@ -46,11 +45,9 @@ class LANEnumeration(Controller):
             print('\nXmas Scan...')
             xmas_open, xmas_filtered = scans.xmas_scan(host["IP"], [i for i in range(1024)])
             if xmas_open:
-                for port in xmas_open:
-                    print(f'Port {port} is open')
+                print('\n'.join(f'Port {port} is open' for port in xmas_open))
             elif xmas_filtered:
-                for port in xmas_filtered:
-                    print(f'Port {port} is filtered')
+                print('\n'.join(f'Port {port} is filtered' for port in xmas_filtered))
             else:
                 print('No open or filtered ports')
 
