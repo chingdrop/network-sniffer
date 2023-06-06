@@ -1,5 +1,6 @@
 import socket
-from scapy.all import srp, ARP, Ether
+from scapy.layers import ARP, Ether
+from scapy.sendrecv import srp
 
 
 class Pings:

@@ -1,4 +1,6 @@
-from scapy.all import sr, sr1, RandShort, ICMP, IP, TCP
+from scapy.layers import ICMP, IP, TCP
+from scapy.sendrecv import sr, sr1
+from scapy.volatile import RandShort
 
 
 class Scans:
