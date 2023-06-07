@@ -1,26 +1,24 @@
 from scapy.layers import ICMP, IP, TCP
-from scapy.sendrecv import sr, sr1
+from scapy.sendrecv import sr
 from scapy.volatile import RandShort
 
 
 class Scans:
 
-    def ack_scan(self, target, port=80, verbose=True):
+    def ack_scan(self, target, ports, verbose=True):
         src_port = RandShort()
         try:
-            ans = sr1(IP(dst=target)/TCP(sport=src_port, dport=port,flags="A", seq=12345), timeout=3, verbose=0)
-            if ans:
-                if ans.haslayer(TCP) and ans.getlayer(TCP).flags == 0x4:
-                    res = False
-                elif ans.haslayer(ICMP) \
-                    and int(ans.getlayer(ICMP).type) == 3 and int(ans.getlayer(ICMP).code) in [1,2,3,9,10,13]:
-                    res = True
-            else:
-                res = True
+            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports,flags="A", seq=12345), timeout=5, verbose=0)
+            unfiltered_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == 0x14]
+            filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and \
+                              r[ICMP].type == 3 and r[ICMP].code in [1, 2, 3, 9, 10, 13]]
 
             if verbose:
-                print('Filtered : Stateful firewall present' if res else 'Unfiltered : No stateful firewall present')
-            return res
+                message = '\n'.join(f'Port {port} is open' for port in unfiltered_ports) if unfiltered_ports \
+                    else '\n'.join(f'Port {port} is filtered' for port in filtered_ports) if filtered_ports \
+                    else 'No open or filtered ports'
+                print(message)
+            return unfiltered_ports, filtered_ports
         
         except Exception as e:
             print(e)
