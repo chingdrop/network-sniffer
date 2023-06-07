@@ -31,7 +31,7 @@ class Scans:
                     else '\n'.join(f'Port {port} is filtered by a firewall' for port in filtered_ports) if filtered_ports \
                     else 'No unfiltered or filtered ports'
                 print(message)
-            return unfiltered_ports, filtered_ports, closed_ports
+            return unfiltered_ports, filtered_ports
         
         except Exception as e:
             print(e)
@@ -42,8 +42,7 @@ class Scans:
         filtered_ports = []
         closed_ports = []
         try:
-            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0, threaded=True)
-                
+            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0)
             for s,r in ans:
                 if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
                     closed_ports.append(s[TCP].dport)
@@ -58,7 +57,7 @@ class Scans:
                     else '\n'.join(f'Port {port} is filtered' for port in filtered_ports) if filtered_ports \
                     else 'No open or filtered ports'
                 print(message)
-            return open_ports, filtered_ports, closed_ports
+            return open_ports, filtered_ports
         
         except Exception as e:
             print(e)
