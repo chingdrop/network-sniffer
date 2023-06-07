@@ -38,7 +38,7 @@ class LANEnumeration(Controller):
 
             print('\nACK Scan...')
             print('Testing the firewall rules for detected open ports')
-            ack_open = scans.ack_scan(host["IP"], xmas_open)
+            ack_open, ack_filtered = scans.ack_scan(host["IP"], xmas_open)
 
             print('\nProtocol Scan...')
             open_protos = scans.protocol_scan(host["IP"])
