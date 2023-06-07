@@ -12,36 +12,53 @@ class Scans:
 
     def ack_scan(self, target, ports, verbose=True):
         src_port = RandShort()
+        unfiltered_ports = []
+        filtered_ports = []
+        closed_ports = []
         try:
             ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports,flags="A", seq=12345), timeout=5, verbose=0)
-            unfiltered_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH]
-            filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and \
-                              r[ICMP].type == ICMP_DESTINATION_UNREACHABLE and r[ICMP].code in self.icmp_codes]
-
+            for s,r in ans:
+                if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
+                    closed_ports.append(s[TCP].dport)
+                elif r.haslayer(ICMP) and \
+                    r[ICMP].type == ICMP_DESTINATION_UNREACHABLE and r[ICMP].code in self.icmp_codes:
+                    filtered_ports.append(s[TCP].dport)
+                else:
+                    unfiltered_ports.append(s[TCP].dport)
+            
             if verbose:
-                message = '\n'.join(f'Port {port} is open' for port in unfiltered_ports) if unfiltered_ports \
-                    else '\n'.join(f'Port {port} is filtered' for port in filtered_ports) if filtered_ports \
-                    else 'No open or filtered ports'
+                message = '\n'.join(f'Port {port} is unfiltered' for port in unfiltered_ports) if unfiltered_ports \
+                    else '\n'.join(f'Port {port} is filtered by a firewall' for port in filtered_ports) if filtered_ports \
+                    else 'No unfiltered or filtered ports'
                 print(message)
-            return unfiltered_ports, filtered_ports
+            return unfiltered_ports, filtered_ports, closed_ports
         
         except Exception as e:
             print(e)
 
     def xmas_scan(self, target, ports, verbose=True):
         src_port = RandShort()
+        open_ports = []
+        filtered_ports = []
+        closed_ports = []
         try:
-            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0)
-            open_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH]
-            filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and \
-                              r[ICMP].type == ICMP_DESTINATION_UNREACHABLE and r[ICMP].code in self.icmp_codes]
+            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0, threaded=True)
+                
+            for s,r in ans:
+                if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
+                    closed_ports.append(s[TCP].dport)
+                elif r.haslayer(ICMP) and \
+                    r[ICMP].type == ICMP_DESTINATION_UNREACHABLE and r[ICMP].code in self.icmp_codes:
+                    filtered_ports.append(s[TCP].dport)
+                else:
+                    open_ports.append(s[TCP].dport)
             
             if verbose:
                 message = '\n'.join(f'Port {port} is open' for port in open_ports) if open_ports \
                     else '\n'.join(f'Port {port} is filtered' for port in filtered_ports) if filtered_ports \
                     else 'No open or filtered ports'
                 print(message)
-            return open_ports, filtered_ports
+            return open_ports, filtered_ports, closed_ports
         
         except Exception as e:
             print(e)
