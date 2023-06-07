@@ -31,7 +31,7 @@ class Scans:
                     else '\n'.join(f'Port {port} is filtered by a firewall' for port in filtered_ports) if filtered_ports \
                     else 'No unfiltered or filtered ports'
                 print(message)
-            return unfiltered_ports, filtered_ports
+            return unfiltered_ports, filtered_ports, closed_ports
         
         except Exception as e:
             print(e)
@@ -58,7 +58,7 @@ class Scans:
                     else '\n'.join(f'Port {port} is filtered' for port in filtered_ports) if filtered_ports \
                     else 'No open or filtered ports'
                 print(message)
-            return open_ports, filtered_ports
+            return open_ports, filtered_ports, closed_ports
         
         except Exception as e:
             print(e)
