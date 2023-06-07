@@ -23,7 +23,6 @@ class LANEnumeration(Controller):
     )
     def quick_enumeration(self):
         iface = self.app.pargs.iface
-        scans = Scans()
         lan = LocalNetwork().get_network_ip(iface)
         live_hosts = Pings().arp_ping(str(lan))
 
@@ -34,11 +33,11 @@ class LANEnumeration(Controller):
 
             print('\nACK Scan...')
             print('Testing the firewall rules for detected open ports')
-            ack_open, ack_filtered = scans.ack_scan(host["IP"], ports)
+            ack_open, ack_filtered = Scans().ack_scan(host["IP"], ports)
 
             print('\nXmas Scan...')
             print('Determining if host has any open or filtered ports')
-            xmas_open, xmas_filtered = scans.xmas_scan(host["IP"], ports)
+            xmas_open, xmas_filtered = Scans().xmas_scan(host["IP"], ports)
                 
             if ack_open or xmas_open:
                 target_list.append(host)
