@@ -1,4 +1,4 @@
-
+import os
 from cement import App, TestApp, init_defaults
 from cement.core.exc import CaughtSignal
 from .core.exc import ScapyEndpointError
@@ -90,4 +90,6 @@ def main():
 
 
 if __name__ == '__main__':
+    if os.getuid() != 0:
+        raise EnvironmentError(f"Sorry, you need to be root to run this program!")
     main()
