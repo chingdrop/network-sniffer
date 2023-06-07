@@ -2,16 +2,21 @@ from scapy.layers.inet import ICMP, IP, TCP
 from scapy.sendrecv import sr
 from scapy.volatile import RandShort
 
+from scapy_endpoint.controllers.commands.enums import TcpFlags, IcmpCodes, ICMP_DESTINATION_UNREACHABLE
+
 
 class Scans:
+
+    def __init__(self) -> None:
+        self.icmp_codes = [i.value for i in IcmpCodes]
 
     def ack_scan(self, target, ports, verbose=True):
         src_port = RandShort()
         try:
             ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports,flags="A", seq=12345), timeout=5, verbose=0)
-            unfiltered_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == 0x14]
+            unfiltered_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH]
             filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and \
-                              r[ICMP].type == 3 and r[ICMP].code in [1, 2, 3, 9, 10, 13]]
+                              r[ICMP].type == ICMP_DESTINATION_UNREACHABLE and r[ICMP].code in self.icmp_codes]
 
             if verbose:
                 message = '\n'.join(f'Port {port} is open' for port in unfiltered_ports) if unfiltered_ports \
@@ -27,9 +32,9 @@ class Scans:
         src_port = RandShort()
         try:
             ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0)
-            open_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == 0x14]
+            open_ports = [s[TCP].dport for s,r in ans if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH]
             filtered_ports = [s[TCP].dport for s,r in ans if r.haslayer(ICMP) and \
-                              r[ICMP].type == 3 and r[ICMP].code in [1, 2, 3, 9, 10, 13]]
+                              r[ICMP].type == ICMP_DESTINATION_UNREACHABLE and r[ICMP].code in self.icmp_codes]
             
             if verbose:
                 message = '\n'.join(f'Port {port} is open' for port in open_ports) if open_ports \
