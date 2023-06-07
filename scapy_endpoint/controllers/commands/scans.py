@@ -16,7 +16,7 @@ class Scans:
         filtered_ports = []
         closed_ports = []
         try:
-            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports,flags="A", seq=12345), timeout=5, verbose=0)
+            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports,flags="A", seq=12345), timeout=5, verbose=0, threaded=True)
             for s,r in ans:
                 if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
                     closed_ports.append(s[TCP].dport)
@@ -42,7 +42,7 @@ class Scans:
         filtered_ports = []
         closed_ports = []
         try:
-            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0)
+            ans, unans = sr(IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU"), timeout=5, verbose=0, threaded=True)
             for s,r in ans:
                 if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
                     closed_ports.append(s[TCP].dport)
