@@ -1,5 +1,5 @@
 import socket
-from scapy.layers import ARP, Ether
+from scapy.layers.l2 import ARP, Ether
 from scapy.sendrecv import srp
 
 

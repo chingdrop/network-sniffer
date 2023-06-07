@@ -1,4 +1,4 @@
-from scapy.layers import ICMP, IP, TCP
+from scapy.layers.inet import ICMP, IP, TCP
 from scapy.sendrecv import sr
 from scapy.volatile import RandShort
 
