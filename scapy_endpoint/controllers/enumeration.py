@@ -34,16 +34,17 @@ class LANEnumeration(Controller):
 
             print('\nXmas Scan...')
             print('Determining if host has any open or filtered ports')
-            xmas_open, xmas_filtered = scans.xmas_scan(host["IP"], ports)
+            xmas_open, xmas_filtered, xmas_closed = scans.xmas_scan(host["IP"], ports)
 
             print('\nACK Scan...')
             print('Testing the firewall rules for detected open ports')
-            ack_open, ack_filtered = scans.ack_scan(host["IP"], xmas_open)
+            ack_open, ack_filtered = scans.ack_scan(host["IP"], xmas_open if xmas_open else \
+                                                    xmas_filtered if xmas_filtered else xmas_closed)
 
-            print('\nProtocol Scan...')
-            open_protos = scans.protocol_scan(host["IP"])
+            # print('\nProtocol Scan...')
+            # open_protos = scans.protocol_scan(host["IP"])
 
-            if ack_open or xmas_open or open_protos:
+            if ack_open and xmas_open:
                 target_list.append(host)
         
         print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in target_list))
