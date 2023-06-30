@@ -1,3 +1,4 @@
+from typing import Tuple
 from scapy.layers.inet import ICMP, IP, TCP
 from scapy.sendrecv import sr
 from scapy.volatile import RandShort
@@ -10,7 +11,7 @@ class Scans:
     def __init__(self) -> None:
         self.icmp_codes = [i.value for i in IcmpCodes]
 
-    def ack_scan(self, target, ports, verbose=True):
+    def ack_scan(self, target, ports, verbose=True) -> Tuple[list, list]:
         src_port = RandShort()
         unfiltered_ports = []
         filtered_ports = []
@@ -39,7 +40,7 @@ class Scans:
         except Exception as e:
             print(e)
 
-    def xmas_scan(self, target, ports, verbose=True):
+    def xmas_scan(self, target, ports, verbose=True) -> Tuple[list, list]:
         src_port = RandShort()
         open_ports = []
         filtered_ports = []
@@ -67,7 +68,7 @@ class Scans:
         except Exception as e:
             print(e)
 
-    def protocol_scan(self, target, verbose=True):
+    def protocol_scan(self, target, verbose=True) -> list:
         try:
             ans, unans = sr(IP(dst=target, proto=[i for i in range(256)])/"SCAPY", timeout=3, verbose=0)
             open_protos = [s[IP].proto for s,r in ans]

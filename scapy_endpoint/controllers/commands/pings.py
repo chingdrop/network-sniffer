@@ -5,7 +5,7 @@ from scapy.sendrecv import srp
 
 class Pings:
 
-    def arp_ping(self, target, verbose=True):
+    def arp_ping(self, target, verbose=True) -> list:
         host_list = []
         # This definitely could be done better, but I don't want to nest try/excepts
         try:

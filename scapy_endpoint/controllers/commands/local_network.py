@@ -6,11 +6,11 @@ from ipaddress import IPv4Network
 
 class LocalNetwork:
 
-    def get_local_ip(self):
+    def get_local_ip(self) -> str:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.settimeout(0)
         try:
-            # doesn't have to be reachable
+            # doesn't have to be reachable, error assigns localhost
             s.connect(('1.1.1.1', 1))
             ip = s.getsockname()[0]
         except Exception:
