@@ -8,8 +8,9 @@ class Pings:
     def arp_ping(self, target, verbose=True) -> list:
         host_list = []
         # This definitely could be done better, but I don't want to nest try/excepts
+        pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target)
         try:
-            ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target), timeout=3, verbose=0)
+            ans, unans = srp(pkt, timeout=3, verbose=0)
         except Exception as e:
             print(e)
 
