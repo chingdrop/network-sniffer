@@ -11,7 +11,13 @@ class Scans:
     def __init__(self) -> None:
         self.icmp_codes = [i.value for i in IcmpCodes]
 
-    def ack_scan(self, target, ports, verbose=True) -> Tuple[list, list]:
+    def ack_scan(
+            self, 
+            target: str, 
+            ports: list[int], 
+            verbose=True
+            ) -> Tuple[list, list]:
+        
         src_port = RandShort()
         unfiltered_ports = []
         filtered_ports = []
@@ -41,7 +47,13 @@ class Scans:
         except Exception as e:
             print(e)
 
-    def xmas_scan(self, target, ports, verbose=True) -> Tuple[list, list]:
+    def xmas_scan(
+            self, 
+            target: str, 
+            ports: list[int], 
+            verbose=True
+            ) -> Tuple[list, list]:
+        
         src_port = RandShort()
         open_ports = []
         filtered_ports = []
@@ -70,7 +82,12 @@ class Scans:
         except Exception as e:
             print(e)
 
-    def protocol_scan(self, target, verbose=True) -> list:
+    def protocol_scan(
+            self, 
+            target: str, 
+            verbose=True
+            ) -> list[int]:
+        
         pkt = IP(dst=target, proto=[i for i in range(256)])/"SCAPY"
         try:
             ans, unans = sr(pkt, timeout=3, verbose=0)
