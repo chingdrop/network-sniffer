@@ -1,9 +1,9 @@
 from cement import Controller, ex
+import asyncio
 
 from scapy_endpoint.controllers.commands.pings import Pings
 from scapy_endpoint.controllers.commands.local_network import LocalNetwork
-from scapy_endpoint.controllers.commands.scans import Scans
-from scapy_endpoint.controllers.commands.enums import NON_PRIVILEGED_LOW_PORT
+from scapy_endpoint.controllers.commands.coro import AsyncTargetEnumeration
 
 
 class LANEnumeration(Controller):
@@ -22,27 +22,18 @@ class LANEnumeration(Controller):
         ],
     )
     def quick_enumeration(self):
+        async_enum = AsyncTargetEnumeration()
         iface = self.app.pargs.iface
         lan = LocalNetwork().get_network_ip(iface)
         live_hosts = Pings().arp_ping(str(lan))
-
-        ports = [i for i in range(1, NON_PRIVILEGED_LOW_PORT)]
-        target_list = []
-        for host in live_hosts:
-            print(f'\nBeginning port scan for {host["IP"]}!')
-
-            print('\nACK Scan...')
-            print('Testing the firewall rules for detected open ports')
-            ack_open, ack_filtered = Scans().ack_scan(host["IP"], ports)
-
-            print('\nXmas Scan...')
-            print('Determining if host has any open or filtered ports')
-            xmas_open, xmas_filtered = Scans().xmas_scan(host["IP"], ports)
-                
-            if ack_open or xmas_open:
-                target_list.append(host)
-
-            # print('\nProtocol Scan...')
-            # open_protos = scans.protocol_scan(host["IP"])
         
+        async def start_host_enum(hosts):
+            target_list = []
+            for host in hosts:
+                results = await async_enum.coro_quick_scan(host)
+                if results:
+                    target_list.append(host)
+                return target_list
+                
+        target_list = asyncio.run(start_host_enum(live_hosts))
         print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in target_list))
