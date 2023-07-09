@@ -24,7 +24,7 @@ class Scans:
         closed_ports = []
         pkt = IP(dst=target)/TCP(sport=src_port, dport=ports,flags="A", seq=12345)
         try:
-            ans, unans = sr(pkt, timeout=5, verbose=0, threaded=True)
+            ans, _ = sr(pkt, timeout=5, verbose=0, threaded=True)
             for s,r in ans:
                 if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
                     closed_ports.append(s[TCP].dport)
@@ -60,7 +60,7 @@ class Scans:
         closed_ports = []
         pkt = IP(dst=target)/TCP(sport=src_port, dport=ports, flags="FPU")
         try:
-            ans, unans = sr(pkt, timeout=5, verbose=0, threaded=True)
+            ans, _ = sr(pkt, timeout=5, verbose=0, threaded=True)
             for s,r in ans:
                 if r.haslayer(TCP) and r[TCP].flags == TcpFlags.RST_PSH:
                     closed_ports.append(s[TCP].dport)
@@ -85,12 +85,13 @@ class Scans:
     def protocol_scan(
             self, 
             target: str, 
+            protos: list[int],
             verbose=True
             ) -> list[int]:
         
-        pkt = IP(dst=target, proto=[i for i in range(256)])/"SCAPY"
+        pkt = IP(dst=target, proto=protos)/"SCAPY"
         try:
-            ans, unans = sr(pkt, timeout=3, verbose=0)
+            ans, _ = sr(pkt, timeout=3, verbose=0)
             open_protos = [s[IP].proto for s,r in ans]
 
             if verbose:
