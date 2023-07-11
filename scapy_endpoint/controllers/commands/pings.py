@@ -6,19 +6,19 @@ from scapy.sendrecv import srp
 class Pings:
 
     def arp_ping(self, 
-                 target: str, 
-                 verbose=True
-                 ) -> list[dict]:
+                target: str, 
+                verbose=True
+                ) -> list[dict]:
         
         host_list = []
         # This definitely could be done better, but I don't want to nest try/excepts
         pkt = Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target)
         try:
-            ans, unans = srp(pkt, timeout=3, verbose=0)
+            ans, _ = srp(pkt, timeout=3, verbose=0)
         except Exception as e:
             print(e)
 
-        for s,r in ans:
+        for _, r in ans:
             try:
                 hostname = socket.gethostbyaddr(r[ARP].psrc)[0]
             except socket.herror:
