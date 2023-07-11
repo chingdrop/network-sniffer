@@ -28,10 +28,10 @@ class LANEnumeration(Controller):
             
         num_processes = (multiprocessing.cpu_count() - 1)
         pool = multiprocessing.Pool(processes=num_processes)
-
         results = pool.map(mpt.mp_scan, live_hosts)
 
         pool.close()
         pool.join()
 
+        print()
         print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in results if target))
