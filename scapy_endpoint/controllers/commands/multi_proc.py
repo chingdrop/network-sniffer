@@ -5,7 +5,7 @@ from scapy_endpoint.controllers.commands.enums import NON_PRIVILEGED_LOW_PORT, B
 class MultiProcTasks:
 
     @staticmethod
-    def mp_scan(host: int):
+    def mp_scan(host: dict) -> dict:
         scans = Scans()
         low_port_range = [i for i in range(1, NON_PRIVILEGED_LOW_PORT)]
         proto_range = [i for i in range(1, BASIC_PROTOCOLS)]
