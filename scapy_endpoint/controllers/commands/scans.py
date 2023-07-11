@@ -37,7 +37,7 @@ class Scans:
                     unfiltered_ports.append(s[TCP].dport)
             
             if verbose:
-                print('ACK Scan : Testing the firewall rules for detected open ports')
+                print(f'\nACK Scan {target} : Testing the firewall rules for detected open ports')
                 print(f'Started : {time}')
                 if unfiltered_ports:
                     print(f'{len(unfiltered_ports)} ports unfiltered')
@@ -76,7 +76,7 @@ class Scans:
                     open_ports.append(s[TCP].dport)
             
             if verbose:
-                print('XMAS Scan : Determining if host has any open or filtered ports')
+                print(f'\nXMAS Scan {target} : Determining if host has any open or filtered ports')
                 print(f'Started : {time}')
                 if open_ports:
                     print(f'{len(open_ports)} ports open')
@@ -103,7 +103,7 @@ class Scans:
             open_protos = [s[IP].proto for s,r in ans]
 
             if verbose:
-                print('Open Protocols : Determining if host has any listening protocols')
+                print(f'\nOpen Protocols {target} : Determining if host has any listening protocols')
                 print(f'Started : {time}')
                 print('\n'.join(f'Protocol {proto} is listening' for proto in open_protos) if open_protos \
                       else "No protocols are listening")
