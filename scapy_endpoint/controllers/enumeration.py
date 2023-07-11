@@ -1,9 +1,9 @@
 from cement import Controller, ex
-import asyncio
+import multiprocessing
 
 from scapy_endpoint.controllers.commands.pings import Pings
 from scapy_endpoint.controllers.commands.local_network import LocalNetwork
-from scapy_endpoint.controllers.commands.coro import AsyncTargetEnumeration
+from scapy_endpoint.controllers.commands.multi_proc import MultiProcTasks as mpt
 
 
 class LANEnumeration(Controller):
@@ -22,18 +22,16 @@ class LANEnumeration(Controller):
         ],
     )
     def quick_enumeration(self):
-        async_enum = AsyncTargetEnumeration()
         iface = self.app.pargs.iface
         lan = LocalNetwork().get_network_ip(iface)
         live_hosts = Pings().arp_ping(str(lan))
-        
-        async def start_host_enum(hosts):
-            target_list = []
-            for host in hosts:
-                results = await async_enum.coro_quick_scan(host)
-                if results:
-                    target_list.append(host)
-                return target_list
-                
-        target_list = asyncio.run(start_host_enum(live_hosts))
-        print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in target_list))
+            
+        num_processes = (multiprocessing.cpu_count() - 1)
+        pool = multiprocessing.Pool(processes=num_processes)
+
+        results = pool.map(mpt.mp_scan, live_hosts)
+
+        pool.close()
+        pool.join()
+
+        print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in results if target))
