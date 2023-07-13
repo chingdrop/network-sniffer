@@ -34,4 +34,10 @@ class LANEnumeration(Controller):
         pool.join()
 
         print()
-        print('\n'.join(f'{target["IP"]} : {target["MAC"]} could be a potential target' for target in results if target))
+        for target in results:
+            if target:
+                print('-' * 65)
+                print(f'{target["IP"]} : {target["MAC"]} could be a potential target')
+                print(f'{len(target["UnfilteredPorts"])} ports unfiltered by a firewall')
+                print(f'{len(target["OpenPorts"])} ports open')
+                print(f'{len(target["ListeningProtocols"])} protocols listening')
