@@ -9,11 +9,16 @@ class MultiProcTasks:
         scans = Scans()
         low_port_range = [i for i in range(1, NON_PRIVILEGED_LOW_PORT)]
         proto_range = [i for i in range(1, BASIC_PROTOCOLS)]
-        ack_unfil, _ = scans.ack_scan(host['IP'], low_port_range)
-        xmas_open, _ = scans.xmas_scan(host['IP'], low_port_range)
-        proto_list = scans.protocol_scan(host['IP'], proto_range)
+        ack_unfil, _ = scans.ack_scan(host['IP'], low_port_range, verbose=False)
+        xmas_open, _ = scans.xmas_scan(host['IP'], low_port_range, verbose=False)
+        proto_list = scans.protocol_scan(host['IP'], proto_range, verbose=False)
         
         if ack_unfil or xmas_open or proto_list:
+            host.update({
+                'UnfilteredPorts': ack_unfil,
+                'OpenPorts': xmas_open,
+                'ListeningProtocols': proto_list
+                })
             return host
         else:
             return None
