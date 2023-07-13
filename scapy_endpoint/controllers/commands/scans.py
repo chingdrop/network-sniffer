@@ -40,9 +40,11 @@ class Scans:
                 print(f'\nACK Scan {target} : Testing the firewall rules for detected open ports')
                 print(f'Started : {time}')
                 if unfiltered_ports:
-                    print(f'{len(unfiltered_ports)} ports unfiltered')
+                    print('\n'.join(f'Port {port} is unfiltered' for port in unfiltered_ports) \
+                          if unfiltered_ports else "No ports are filtered")
                 elif filtered_ports:
-                    print(f'{len(filtered_ports)} ports filtered')
+                    print('\n'.join(f'Port {port} is filtered' for port in filtered_ports) \
+                          if filtered_ports else "No ports are filtered")
                 else:
                     print('No unfiltered or filtered ports')
 
@@ -79,11 +81,13 @@ class Scans:
                 print(f'\nXMAS Scan {target} : Determining if host has any open or filtered ports')
                 print(f'Started : {time}')
                 if open_ports:
-                    print(f'{len(open_ports)} ports open')
+                    print('\n'.join(f'Port {port} is open' for port in open_ports) \
+                          if open_ports else "No ports are open")
                 elif filtered_ports:
-                    print(f'{len(filtered_ports)} ports filtered')
+                    print('\n'.join(f'Port {port} is filtered' for port in filtered_ports) \
+                          if filtered_ports else "No ports are filtered")
                 else:
-                    print('No unfiltered or filtered ports')
+                    print('No open or filtered ports')
             return open_ports, filtered_ports
         
         except Exception as e:
