@@ -30,9 +30,14 @@ class LANEnumeration(Controller):
 
         print()
         for target in results:
-            if target:
-                print('-' * 65)
+            print('-' * 65)
+            if target["UnfilteredPorts"] or target["OpenPorts"] or target["ListeningProtocols"]:
                 print(f'{target["IP"]} : {target["MAC"]} could be a potential target')
                 print(f'{len(target["UnfilteredPorts"])} ports unfiltered by a firewall')
                 print(f'{len(target["OpenPorts"])} ports open')
                 print(f'{len(target["ListeningProtocols"])} protocols listening')
+            else:
+                print(f'{target["IP"]} : {target["MAC"]} is secure')
+                print('No firewall rules affecting this host')
+                print('No open ports')
+                print('No protocols listening')

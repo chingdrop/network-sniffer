@@ -19,15 +19,13 @@ class MultiProcTasks:
         xmas_open, _ = self.scans.xmas_scan(host['IP'], self.low_port_range, verbose=False)
         proto_list = self.scans.protocol_scan(host['IP'], self.proto_range, verbose=False)
         
-        if ack_unfil or xmas_open or proto_list:
-            host.update({
-                'UnfilteredPorts': ack_unfil,
-                'OpenPorts': xmas_open,
-                'ListeningProtocols': proto_list
-                })
-            return host
-        else:
-            return None
+        host.update({
+            'UnfilteredPorts': ack_unfil,
+            'OpenPorts': xmas_open,
+            'ListeningProtocols': proto_list
+            })
+        
+        return host
         
     def start_basic_scans(self, hosts):
         pool = mp.Pool(processes=self.num_processes)
