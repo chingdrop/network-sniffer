@@ -12,7 +12,6 @@ class MultiProcTasks:
         self.proto_range = [i for i in range(1, BASIC_PROTOCOLS)]
         self.num_processes = (mp.cpu_count() - 1)
 
-
     def basic_scan_task(self, host: dict) -> dict:
         
         ack_unfil, _ = self.scans.ack_scan(host['IP'], self.low_port_range, verbose=False)
