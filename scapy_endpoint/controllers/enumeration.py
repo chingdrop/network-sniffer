@@ -1,9 +1,8 @@
 from cement import Controller, ex
-import multiprocessing
 
 from scapy_endpoint.controllers.commands.pings import Pings
 from scapy_endpoint.controllers.commands.local_network import LocalNetwork
-from scapy_endpoint.controllers.commands.multi_proc import MultiProcTasks as mpt
+from scapy_endpoint.controllers.commands.multi_proc import MultiProcTasks
 
 
 class LANEnumeration(Controller):
@@ -25,13 +24,9 @@ class LANEnumeration(Controller):
         iface = self.app.pargs.iface
         lan = LocalNetwork().get_network_ip(iface)
         live_hosts = Pings().arp_ping(str(lan))
-            
-        num_processes = (multiprocessing.cpu_count() - 1)
-        pool = multiprocessing.Pool(processes=num_processes)
-        results = pool.map(mpt.mp_scan, live_hosts)
+        mpt = MultiProcTasks()
 
-        pool.close()
-        pool.join()
+        results = mpt.start_basic_scans(live_hosts)
 
         print()
         for target in results:
