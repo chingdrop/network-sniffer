@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# My Directories
+docs/.obsidian
+
 # C extensions
 *.so
 
