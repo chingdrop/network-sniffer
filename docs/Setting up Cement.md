@@ -1,9 +1,7 @@
-# Cement CLI App
+
 
 ## Creating the Cement Project
-
 I created the cement project in a virtual environment on my working PC in WSL.  
-Sources - <https://docs.builtoncement.com/getting-started/installation>, <https://docs.builtoncement.com/getting-started/beginner-tutorial/part-1-creating-your-first-project>
 
 1. Make a new virtual environment.  
     `mkvirtualenv scapy_endpoint`
@@ -19,7 +17,6 @@ Sources - <https://docs.builtoncement.com/getting-started/installation>, <https:
     `pip freeze > requirements.txt`
 
 ## Starting the Git Repository
-
 The repository will be cloned to the Raspi where most of the development will be done.
 
 1. Go to github.com and create a new private repository.
@@ -40,3 +37,10 @@ The repository will be cloned to the Raspi where most of the development will be
 8. Commit the new changes and push to GitHub.  
     `git commit -m "started cement project"`  
     `git push origin main`
+
+* * *
+
+## Links
+
+- [Cement - Installation](https://docs.builtoncement.com/getting-started/installation)
+- [Cement - Beginner Tutorial Part 1](https://docs.builtoncement.com/getting-started/beginner-tutorial/part-1-creating-your-first-project)
