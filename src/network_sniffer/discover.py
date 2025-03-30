@@ -7,51 +7,42 @@ class Ping:
 
     def arp_ping(self, target):
         host_list = []
-        ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst=target), timeout=3, verbose=0)
-        for s,r in ans:
-            host = {
-                    "MAC": r[Ether].dst,
-                    "IP": r[ARP].psrc
-                }
+        ans, unans = srp(
+            Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=target), timeout=3, verbose=0
+        )
+        for s, r in ans:
+            host = {"MAC": r[Ether].dst, "IP": r[ARP].psrc}
             host_list.append(host)
-            
+
         return host_list
-    
+
     def icmp_ping(self, target):
         host_list = []
-        ans, unans = sr(IP(dst=target)/ICMP(), timeout=3, verbose=0)
-        for s,r in ans:
-            host = {
-                    "MAC": r[Ether].dst,
-                    "IP": r[IP].dst
-                }
+        ans, unans = sr(IP(dst=target) / ICMP(), timeout=3, verbose=0)
+        for s, r in ans:
+            host = {"MAC": r[Ether].dst, "IP": r[IP].dst}
             host_list.append(host)
-            
+
         return host_list
-    
+
     def tcp_ping(self, target):
         host_list = []
-        ans, unans = sr(IP(dst=target)/TCP(dport=80,flags="S"), timeout=3, verbose=0)
-        for s,r in ans:
-            host = {
-                    "MAC": r[Ether].dst,
-                    "IP": r[IP].dst
-                }
+        ans, unans = sr(IP(dst=target) / TCP(dport=80, flags="S"), timeout=3, verbose=0)
+        for s, r in ans:
+            host = {"MAC": r[Ether].dst, "IP": r[IP].dst}
             host_list.append(host)
-            
+
         return host_list
-    
+
     def udp_ping(self, target):
         host_list = []
-        ans, unans = sr(IP(dst=target)/UDP(dport=0), timeout=3, verbose=0)
-        for s,r in ans:
-            host = {
-                    "MAC": r[Ether].dst,
-                    "IP": r[IP].dst
-                }
+        ans, unans = sr(IP(dst=target) / UDP(dport=0), timeout=3, verbose=0)
+        for s, r in ans:
+            host = {"MAC": r[Ether].dst, "IP": r[IP].dst}
             host_list.append(host)
-            
+
         return host_list
+
 
 class Discover:
 

@@ -5,26 +5,38 @@ class Resolver:
 
     def resolve_a_record(self, target_domain, name_server):
         try:
-            ans = sr1(IP(dst=name_server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="A")))
+            ans = sr1(
+                IP(dst=name_server)
+                / UDP(sport=RandShort(), dport=53)
+                / DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="A"))
+            )
         except Exception as e:
             print(e.message, e.args)
 
-        print(f'{target_domain} is {ans.an.rdata}.')
+        print(f"{target_domain} is {ans.an.rdata}.")
 
     def resolve_soa_record(self, target_domain, name_server):
         try:
-            ans = sr1(IP(dst=name_server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="SOA")))
+            ans = sr1(
+                IP(dst=name_server)
+                / UDP(sport=RandShort(), dport=53)
+                / DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="SOA"))
+            )
         except Exception as e:
             print(e.message, e.args)
 
-        print(f'Primary name server is {ans.an.mname}, contact at {ans.an.rname}')
+        print(f"Primary name server is {ans.an.mname}, contact at {ans.an.rname}")
 
     def resolve_mx_record(self, target_domain, name_server):
         try:
-            ans = sr1(IP(dst=name_server)/UDP(sport=RandShort(), dport=53)/DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="MX")))
+            ans = sr1(
+                IP(dst=name_server)
+                / UDP(sport=RandShort(), dport=53)
+                / DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="MX"))
+            )
         except Exception as e:
             print(e.message, e.args)
 
         ret = [x.exchange for x in ans.an.iterpayloads()]
         for i in ret:
-            print(f'MX {i}')
+            print(f"MX {i}")
