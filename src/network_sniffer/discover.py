@@ -1,5 +1,6 @@
-from cement import Controller, ex
 from scapy.all import sr, srp, ARP, Ether, IP, ICMP, TCP, UDP
+
+from network_sniffer.commands.local_network import LocalNetwork
 
 
 class Ping:
@@ -52,37 +53,14 @@ class Ping:
             
         return host_list
 
-class Discover(Controller):
-    
-    class Meta:
-        label = 'discover'
-        stacked_type = 'embedded'
-        stacked_on = 'base'
+class Discover:
 
-    @ex(
-        help='starts an ARP ping to discover live hosts',
-        arguments=[
-            (['iface'], 
-             {'help': 'target interface',
-              'action': 'store'})
-        ],
-    )
-    def quick_discover(self):
-        iface = self.app.pargs.iface
-        network_ip = RaspiController.get_network_ip(iface)
+    def quick_discover(self, iface):
+        network_ip = LocalNetwork.get_network_ip(iface)
         arp_list = Ping.arp_ping(str(network_ip))
 
-    @ex(
-        help='starts an ARP ping to discover live hosts',
-        arguments=[
-            (['iface'], 
-             {'help': 'target interface',
-              'action': 'store'})
-        ],
-    )
-    def full_discover(self):
-        iface = self.app.pargs.iface
-        network_ip = RaspiController.get_network_ip(iface)
+    def full_discover(self, iface):
+        network_ip = LocalNetwork.get_network_ip(iface)
         arp_list = Ping.arp_ping(str(network_ip))
         icmp_list = Ping.icmp_ping(str(network_ip))
         tcp_list = Ping.tcp_ping(str(network_ip))
