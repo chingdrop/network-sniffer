@@ -1,7 +1,7 @@
 import multiprocessing as mp
 
-from scapy_endpoint.controllers.commands.scans import Scans
-from scapy_endpoint.controllers.commands.enums import NON_PRIVILEGED_LOW_PORT, BASIC_PROTOCOLS
+from network_sniffer.commands.scans import Scans
+from network_sniffer.commands.enums import NON_PRIVILEGED_LOW_PORT, BASIC_PROTOCOLS
 
 
 class MultiProcTasks:
