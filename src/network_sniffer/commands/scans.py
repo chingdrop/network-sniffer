@@ -4,7 +4,7 @@ from scapy.sendrecv import sr
 from scapy.volatile import RandShort
 from datetime import datetime as dt
 
-from scapy_endpoint.controllers.commands.enums import TcpFlags, IcmpCodes, ICMP_DESTINATION_UNREACHABLE
+from network_sniffer.commands.enums import TcpFlags, IcmpCodes, ICMP_DESTINATION_UNREACHABLE
 
 
 class Scans:
