@@ -1,8 +1,11 @@
 import logging
 from typing import List
+from scapy.sendrecv import sr, srp
 from scapy.volatile import RandShort
 from scapy.layers.l2 import ARP, Ether
 from scapy.layers.inet import DNS, DNSQR, IP, ICMP, TCP, UDP
+from scapy.error import Scapy_Exception
+import socket
 
 
 def create_arp_pkt(target: str) -> bytes:
@@ -36,3 +39,75 @@ def create_dns_pkt(target: str, domain: str, qtype: str = "A") -> bytes:
 class BroadcastAdapter:
     def __init__(self, logger) -> None:
         self.logger = logger or logging.getLogger(__name__)
+
+    def _send_rcv(
+        self,
+        level: str,
+        packet: bytes,
+        timeout: int = 3,
+        verbose: int = 0,
+        retry: int = 0,
+        threaded: bool = True,
+    ) -> None:
+        try:
+            if level == "ip":
+                sr(
+                    packet,
+                    timeoutt=timeout,
+                    verbose=verbose,
+                    retry=retry,
+                    threaded=threaded,
+                )
+            elif level == "eth":
+                srp(
+                    packet,
+                    timeoutt=timeout,
+                    verbose=verbose,
+                    retry=retry,
+                    threaded=threaded,
+                )
+            else:
+                self.logger.error(f"Invalid level '{level}' specified, use 'ip' or 'eth'")
+                return
+        except Scapy_Exception as e:
+            self.logger.error(f"Scapy error occurred: {e}")
+        except OSError as e:
+            self.logger.error(f"OS error occurred: {e}")
+        except socket.error as e:
+            self.logger.error(f"Socket error occurred: {e}")
+        except Exception as e:
+            self.logger.error(f"Unexpected error: {e}")
+
+    def send_ip(
+        self,
+        packet: bytes,
+        timeout: int = 3,
+        verbose: int = 0,
+        retry: int = 0,
+        threaded: bool = True,
+    ) -> None:
+        self._send_rcv(
+            level="ip",
+            packet=packet,
+            timeout=timeout,
+            verbose=verbose,
+            retry=retry,
+            threaded=threaded,
+        )
+
+    def send_eth(
+        self,
+        packet: bytes,
+        timeout: int = 3,
+        verbose: int = 0,
+        retry: int = 0,
+        threaded: bool = True,
+    ) -> None:
+        self._send_rcv(
+            level="eth",
+            packet=packet,
+            timeout=timeout,
+            verbose=verbose,
+            retry=retry,
+            threaded=threaded,
+        )
