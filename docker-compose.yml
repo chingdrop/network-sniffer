@@ -18,8 +18,6 @@ services:
       - redis
     networks:
       - backend
-    env_file:
-      - .env
 
 networks:
   backend:
