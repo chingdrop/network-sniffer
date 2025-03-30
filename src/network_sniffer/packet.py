@@ -14,6 +14,7 @@ from scapy.all import (
     UDP,
     ICMP,
     IP,
+    Packet,
     TCP,
     UDP,
     Scapy_Exception,
@@ -50,7 +51,7 @@ def create_dns_pkt(target: str, domain: str, qtype: str) -> bytes:
 
 
 class BroadcastAdapter:
-    def __init__(self, logger) -> None:
+    def __init__(self, logger=None) -> None:
         self.logger = logger or logging.getLogger(__name__)
 
     def _send_rcv(
@@ -117,7 +118,7 @@ class BroadcastAdapter:
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True,
-    ):
+    ) -> Packet:
         ans, _ = self.send(
             packet=packet,
             timeout=timeout,
@@ -153,7 +154,7 @@ class BroadcastAdapter:
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True,
-    ):
+    ) -> Packet:
         ans, _ = self.sendp(
             packet=packet,
             timeout=timeout,
