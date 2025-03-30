@@ -38,31 +38,18 @@ def udp_ping(target: str) -> list[dict]:
     ans, _ = bca.send_ip(pkt, timeout=3, verbose=0)
     return [{"MAC": rcv[Ether].dst, "IP": rcv[IP].dst} for _, rcv in ans]
 
+
+def ping_active_hosts(target: str) -> list[dict]:
+    pkt = create_arp_pkt(target)
+    ans, _ = bca.send_eth(pkt, timeout=3, verbose=0)
+
     host_list = []
-    # This definitely could be done better, but I don't want to nest try/excepts
-    pkt = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst=target)
-
-    try:
-        ans, _ = srp(pkt, timeout=3, verbose=0)
-    except Exception as e:
-        print(e)
-
-    for _, r in ans:
+    for _, recv in ans:
         try:
-            hostname = socket.gethostbyaddr(r[ARP].psrc)[0]
+            hostname = socket.gethostbyaddr(recv[ARP].psrc)[0]
         except socket.herror:
             hostname = ""
-        host_list.append({"HOSTNAME": hostname, "MAC": r[Ether].src, "IP": r[ARP].psrc})
-
-    if verbose:
-        message = (
-            "\n".join(
-                f'{host["MAC"]} : {host["IP"]} : {host["HOSTNAME"] or "No hostname record found"}'
-                for host in host_list
-            )
-            if host_list
-            else "No active hosts found."
+        host_list.append(
+            {"HOSTNAME": hostname, "MAC": recv[Ether].src, "IP": recv[ARP].psrc}
         )
-        print(message)
-
     return host_list
