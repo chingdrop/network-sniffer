@@ -1,8 +1,10 @@
 click==8.1.8
 colorama==0.4.6
 iniconfig==2.1.0
+network-sniffer @ file:///C:/Users/CraigHurley/Code/network-sniffer
 packaging==24.2
 pluggy==1.5.0
+psutil==7.0.0
 pytest==7.3.1
 scapy==2.5.0
 setuptools==75.8.2
