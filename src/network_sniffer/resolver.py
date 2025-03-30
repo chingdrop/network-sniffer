@@ -1,42 +1,22 @@
-from scapy.all import sr1, RandShort, DNS, DNSQR, IP, UDP
+from network_sniffer.packet import BroadcastAdapter, create_dns_pkt
+
+
+bca = BroadcastAdapter()
 
 
 def resolve_a_record(target_domain, name_server):
-    try:
-        ans = sr1(
-            IP(dst=name_server)
-            / UDP(sport=RandShort(), dport=53)
-            / DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="A"))
-        )
-    except Exception as e:
-        print(e.message, e.args)
-
-    print(f"{target_domain} is {ans.an.rdata}.")
+    pkt = create_dns_pkt(target_domain, target_domain, qtype="A")
+    ans = bca.send1(pkt, timeout=3, verbose=0)
+    return ans.an.rdata
 
 
 def resolve_soa_record(target_domain, name_server):
-    try:
-        ans = sr1(
-            IP(dst=name_server)
-            / UDP(sport=RandShort(), dport=53)
-            / DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="SOA"))
-        )
-    except Exception as e:
-        print(e.message, e.args)
-
-    print(f"Primary name server is {ans.an.mname}, contact at {ans.an.rname}")
+    pkt = create_dns_pkt(target_domain, target_domain, qtype="SOA")
+    ans = bca.send1(pkt, timeout=3, verbose=0)
+    return ans.an.mname, ans.an.rname
 
 
 def resolve_mx_record(target_domain, name_server):
-    try:
-        ans = sr1(
-            IP(dst=name_server)
-            / UDP(sport=RandShort(), dport=53)
-            / DNS(rd=1, qd=DNSQR(qname=target_domain, qtype="MX"))
-        )
-    except Exception as e:
-        print(e.message, e.args)
-
-    ret = [x.exchange for x in ans.an.iterpayloads()]
-    for i in ret:
-        print(f"MX {i}")
+    pkt = create_dns_pkt(target_domain, target_domain, qtype="SOA")
+    ans = bca.send1(pkt, timeout=3, verbose=0)
+    return [x.exchange for x in ans.an.iterpayloads()]
