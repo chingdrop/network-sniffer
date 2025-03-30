@@ -1,9 +1,7 @@
 import socket
-from scapy.layers.l2 import ARP, Ether
-from scapy.layers.inet import IP
-from scapy.sendrecv import srp
+from scapy.all import ARP, Ether, IP
 
-from src.network_sniffer.packet import (
+from network_sniffer.packet import (
     BroadcastAdapter,
     create_arp_pkt,
     create_icmp_pkt,

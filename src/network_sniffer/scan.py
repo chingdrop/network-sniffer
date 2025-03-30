@@ -1,10 +1,6 @@
-from typing import Tuple
-from scapy.layers.inet import ICMP, IP, TCP
-from scapy.sendrecv import sr
-from scapy.volatile import RandShort
-from datetime import datetime as dt
+from scapy.all import ICMP, IP, TCP
 
-from network_sniffer.commands.enums import (
+from network_sniffer.enums import (
     TcpFlags,
     IcmpCodes,
     ICMP_DESTINATION_UNREACHABLE,

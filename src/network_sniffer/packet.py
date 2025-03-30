@@ -1,10 +1,23 @@
 import logging
 from typing import List
-from scapy.sendrecv import sr, srp
-from scapy.volatile import RandShort
-from scapy.layers.l2 import ARP, Ether
-from scapy.layers.inet import DNS, DNSQR, IP, ICMP, TCP, UDP
-from scapy.error import Scapy_Exception
+from scapy.all import (
+    sr,
+    srp,
+    RandShort,
+    ARP,
+    DNS,
+    DNSQR,
+    Ether,
+    IP,
+    ICMP,
+    TCP,
+    UDP,
+    ICMP,
+    IP,
+    TCP,
+    UDP,
+    Scapy_Exception,
+)
 import socket
 
 
@@ -53,7 +66,7 @@ class BroadcastAdapter:
             if level == "ip":
                 return sr(
                     packet,
-                    timeoutt=timeout,
+                    timeout=timeout,
                     verbose=verbose,
                     retry=retry,
                     threaded=threaded,
@@ -61,7 +74,7 @@ class BroadcastAdapter:
             elif level == "eth":
                 return srp(
                     packet,
-                    timeoutt=timeout,
+                    timeout=timeout,
                     verbose=verbose,
                     retry=retry,
                     threaded=threaded,
