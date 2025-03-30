@@ -1,6 +1,5 @@
 import socket
-import fcntl
-import struct
+import psutil
 from ipaddress import IPv4Network
 
 
@@ -19,13 +18,14 @@ def get_local_ip() -> str:
 
 
 def get_local_subnet(iface: str):
-    return socket.inet_ntoa(
-        fcntl.ioctl(
-            socket.socket(socket.AF_INET, socket.SOCK_DGRAM),
-            35099,
-            struct.pack(b"256s", iface.encode()),
-        )[20:24]
-    )
+    for name, addrs in psutil.net_if_addrs().items():
+        if name == iface:
+            for addr in addrs:
+                if addr.family == psutil.AF_INET:
+                    ip_address = addr.address
+                    netmask = addr.netmask
+                    network = IPv4Network(f"{ip_address}/{netmask}", strict=False)
+                    return str(network.network_address)
 
 
 def get_network_ip(iface: str):
