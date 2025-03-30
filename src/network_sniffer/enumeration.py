@@ -1,27 +1,11 @@
-from cement import Controller, ex
-
-from scapy_endpoint.controllers.commands.pings import Pings
-from scapy_endpoint.controllers.commands.local_network import LocalNetwork
-from scapy_endpoint.controllers.commands.multi_proc import MultiProcTasks
+from network_sniffer.commands.pings import Pings
+from network_sniffer.commands.local_network import LocalNetwork
+from network_sniffer.commands.multi_proc import MultiProcTasks
 
 
-class LANEnumeration(Controller):
-    
-    class Meta:
-        label = 'lan_enumeration'
-        stacked_type = 'embedded'
-        stacked_on = 'base'
+class LANEnumeration:
 
-    @ex(
-        help='enumerates possible targets on the detected LAN',
-        arguments=[
-            (['iface'], 
-             {'help': 'interface connected to LAN',
-              'action': 'store'})
-        ],
-    )
-    def quick_enumeration(self):
-        iface = self.app.pargs.iface
+    def quick_enumeration(self, iface):
         lan = LocalNetwork().get_network_ip(iface)
         live_hosts = Pings().arp_ping(str(lan))
         mpt = MultiProcTasks()
