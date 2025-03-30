@@ -26,8 +26,12 @@ def quick_enumeration(iface: str):
         host_results.append(host_res)
         if any(ack_res["unfiltered"], xmas_res["open"], proto_res):
             vuln_hosts.append(host_res)
-    
+
     print(f"\nQuick Enumeration Results for Network: {lan}")
     print(f"Total Hosts Found: {len(live_hosts)}")
     print(f"Total Vulnerable Hosts: {len(vuln_hosts)}\n")
     return host_results, vuln_hosts
+
+
+if __name__ == "__main__":
+    quick_enumeration("Wireless LAN adapter Wi-Fi")
