@@ -41,7 +41,7 @@ def create_udp_pkt(target: str, dport: int) -> bytes:
     return IP(dst=target) / UDP(sport=RandShort(), dport=dport)
 
 
-def create_dns_pkt(target: str, domain: str, qtype: str = "A") -> bytes:
+def create_dns_pkt(target: str, domain: str, qtype: str) -> bytes:
     return (
         IP(dst=target)
         / UDP(sport=RandShort(), dport=53)
