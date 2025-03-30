@@ -8,6 +8,7 @@ from network_sniffer.packet import (
     create_tcp_pkt,
     create_udp_pkt,
 )
+from network_sniffer.local import get_lan_info
 
 
 bca = BroadcastAdapter()
@@ -37,17 +38,29 @@ def udp_ping(target: str) -> list[dict]:
     return [{"MAC": recv[Ether].dst, "IP": recv[IP].dst} for _, recv in ans]
 
 
-def ping_active_hosts(target: str) -> list[dict]:
-    pkt = create_arp_pkt(target)
-    ans, _ = bca.sendp(pkt, timeout=3, verbose=0)
-
+def ping_active_hosts(iface: str) -> list[dict]:
     host_list = []
-    for _, recv in ans:
-        try:
-            hostname = socket.gethostbyaddr(recv[ARP].psrc)[0]
-        except socket.herror:
-            hostname = ""
-        host_list.append(
-            {"HOSTNAME": hostname, "MAC": recv[Ether].src, "IP": recv[ARP].psrc}
-        )
+    lan = get_lan_info(iface)
+    for ip in lan["hosts"]:
+        pkt = create_arp_pkt(str(ip))
+        ans = bca.sendp1(pkt, timeout=3, verbose=0)
+        if ans:
+            try:
+                hostname = socket.gethostbyaddr(ans[ARP].psrc)[0]
+            except socket.herror:
+                hostname = ""
+
+            host_list.append(
+                {"hostname": hostname, "mac": ans[Ether].src, "ip": ans[ARP].psrc}
+            )
     return host_list
+
+    # for _, recv in ans:
+    #     try:
+    #         hostname = socket.gethostbyaddr(recv[ARP].psrc)[0]
+    #     except socket.herror:
+    #         hostname = ""
+    #     host_list.append(
+    #         {"HOSTNAME": hostname, "MAC": recv[Ether].src, "IP": recv[ARP].psrc}
+    #     )
+    # return host_list
