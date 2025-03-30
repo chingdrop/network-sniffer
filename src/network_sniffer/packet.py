@@ -80,14 +80,14 @@ class BroadcastAdapter:
         except Exception as e:
             self.logger.error(f"Unexpected error: {e}")
 
-    def send_ip(
+    def send(
         self,
         packet: bytes,
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True
-    ) -> None:
+    ) -> List[tuple]:
         return self._send_rcv(
             level="ip",
             packet=packet,
@@ -97,15 +97,15 @@ class BroadcastAdapter:
             threaded=threaded
         )
     
-    def send_1_ip(
+    def send1(
         self,
         packet: bytes,
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True
-    ) -> None:
-        ans, _ = self.send_ip(
+    ):
+        ans, _ = self.send(
             packet=packet,
             timeout=timeout,
             verbose=verbose,
@@ -116,14 +116,14 @@ class BroadcastAdapter:
             return ans[0][1]
         return None
 
-    def send_eth(
+    def sendp(
         self,
         packet: bytes,
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True
-    ) -> None:
+    ) -> List[tuple]:
         return self._send_rcv(
             level="eth",
             packet=packet,
@@ -133,15 +133,15 @@ class BroadcastAdapter:
             threaded=threaded
         )
 
-    def send_1_eth(
+    def sendp1(
         self,
         packet: bytes,
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True
-    ) -> None:
-        ans, _ = self.send_eth(
+    ):
+        ans, _ = self.sendp(
             packet=packet,
             timeout=timeout,
             verbose=verbose,
