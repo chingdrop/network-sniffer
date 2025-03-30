@@ -1,0 +1,26 @@
+services:
+  redis:
+    image: redis:alpine
+    networks:
+      - backend
+
+  app:
+    build: .
+    depends_on:
+      - redis
+    networks:
+      - backend
+
+  celery:
+    build: .
+    command: ["celery", "-A", "network_sniffer.config.xcelery", "worker", "--loglevel=INFO"]
+    depends_on:
+      - redis
+    networks:
+      - backend
+    env_file:
+      - .env
+
+networks:
+  backend:
+    driver: bridge
