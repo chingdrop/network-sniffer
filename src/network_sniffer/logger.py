@@ -30,6 +30,9 @@ def setup_logger(
             create_file(logs_file)
         file_handler = logging.FileHandler(logs_file)
         file_handler.setLevel(log_level[level])
+        file_handler.setFormatter(
+            logging.Formatter("[%(asctime)s - %(levelname)s/%(name)s]: %(message)s")
+        )
         logger.addHandler(file_handler)
 
     stream_handler = colorlog.StreamHandler()
@@ -44,9 +47,6 @@ def setup_logger(
             "ERROR": "red",
             "CRITICAL": "magenta",
         },
-    )
-    file_handler.setFormatter(
-        logging.Formatter("[%(asctime)s - %(levelname)s/%(name)s]: %(message)s")
     )
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
