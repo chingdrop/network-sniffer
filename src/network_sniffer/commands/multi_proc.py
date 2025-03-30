@@ -10,22 +10,30 @@ class MultiProcTasks:
         self.scans = Scans()
         self.low_port_range = [i for i in range(1, NON_PRIVILEGED_LOW_PORT)]
         self.proto_range = [i for i in range(1, BASIC_PROTOCOLS)]
-        self.num_processes = (mp.cpu_count() - 1)
+        self.num_processes = mp.cpu_count() - 1
 
     def basic_scan_task(self, host: dict) -> dict:
-        
-        ack_unfil, _ = self.scans.ack_scan(host['IP'], self.low_port_range, verbose=False)
-        xmas_open, _ = self.scans.xmas_scan(host['IP'], self.low_port_range, verbose=False)
-        proto_list = self.scans.protocol_scan(host['IP'], self.proto_range, verbose=False)
-        
-        host.update({
-            'UnfilteredPorts': ack_unfil,
-            'OpenPorts': xmas_open,
-            'ListeningProtocols': proto_list
-            })
-        
+
+        ack_unfil, _ = self.scans.ack_scan(
+            host["IP"], self.low_port_range, verbose=False
+        )
+        xmas_open, _ = self.scans.xmas_scan(
+            host["IP"], self.low_port_range, verbose=False
+        )
+        proto_list = self.scans.protocol_scan(
+            host["IP"], self.proto_range, verbose=False
+        )
+
+        host.update(
+            {
+                "UnfilteredPorts": ack_unfil,
+                "OpenPorts": xmas_open,
+                "ListeningProtocols": proto_list,
+            }
+        )
+
         return host
-        
+
     def start_basic_scans(self, hosts):
         pool = mp.Pool(processes=self.num_processes)
         results = pool.map(self.basic_scan_task, hosts)
