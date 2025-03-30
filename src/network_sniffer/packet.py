@@ -48,10 +48,10 @@ class BroadcastAdapter:
         verbose: int = 0,
         retry: int = 0,
         threaded: bool = True,
-    ) -> None:
+    ):
         try:
             if level == "ip":
-                sr(
+                return sr(
                     packet,
                     timeoutt=timeout,
                     verbose=verbose,
@@ -59,7 +59,7 @@ class BroadcastAdapter:
                     threaded=threaded,
                 )
             elif level == "eth":
-                srp(
+                return srp(
                     packet,
                     timeoutt=timeout,
                     verbose=verbose,
@@ -67,7 +67,9 @@ class BroadcastAdapter:
                     threaded=threaded,
                 )
             else:
-                self.logger.error(f"Invalid level '{level}' specified, use 'ip' or 'eth'")
+                self.logger.error(
+                    f"Invalid level '{level}' specified, use 'ip' or 'eth'"
+                )
                 return
         except Scapy_Exception as e:
             self.logger.error(f"Scapy error occurred: {e}")
@@ -86,7 +88,7 @@ class BroadcastAdapter:
         retry: int = 0,
         threaded: bool = True,
     ) -> None:
-        self._send_rcv(
+        return self._send_rcv(
             level="ip",
             packet=packet,
             timeout=timeout,
@@ -103,7 +105,7 @@ class BroadcastAdapter:
         retry: int = 0,
         threaded: bool = True,
     ) -> None:
-        self._send_rcv(
+        return self._send_rcv(
             level="eth",
             packet=packet,
             timeout=timeout,
