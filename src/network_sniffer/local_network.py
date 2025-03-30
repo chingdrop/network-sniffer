@@ -13,8 +13,8 @@ def get_local_ip() -> str:
         ip = s.getsockname()[0]
     except Exception:
         ip = "127.0.0.1"
-    finally:
-        s.close()
+    
+    s.close()
     return ip
 
 
