@@ -47,7 +47,7 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True,
+        threaded: bool = True
     ):
         try:
             if level == "ip":
@@ -56,7 +56,7 @@ class BroadcastAdapter:
                     timeoutt=timeout,
                     verbose=verbose,
                     retry=retry,
-                    threaded=threaded,
+                    threaded=threaded
                 )
             elif level == "eth":
                 return srp(
@@ -64,13 +64,13 @@ class BroadcastAdapter:
                     timeoutt=timeout,
                     verbose=verbose,
                     retry=retry,
-                    threaded=threaded,
+                    threaded=threaded
                 )
             else:
                 self.logger.error(
                     f"Invalid level '{level}' specified, use 'ip' or 'eth'"
                 )
-                return
+                return None
         except Scapy_Exception as e:
             self.logger.error(f"Scapy error occurred: {e}")
         except OSError as e:
@@ -86,7 +86,7 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True,
+        threaded: bool = True
     ) -> None:
         return self._send_rcv(
             level="ip",
@@ -94,8 +94,27 @@ class BroadcastAdapter:
             timeout=timeout,
             verbose=verbose,
             retry=retry,
-            threaded=threaded,
+            threaded=threaded
         )
+    
+    def send_1_ip(
+        self,
+        packet: bytes,
+        timeout: int = 3,
+        verbose: int = 0,
+        retry: int = 0,
+        threaded: bool = True
+    ) -> None:
+        ans, _ = self.send_ip(
+            packet=packet,
+            timeout=timeout,
+            verbose=verbose,
+            retry=retry,
+            threaded=threaded
+        )
+        if ans:
+            return ans[0][1]
+        return None
 
     def send_eth(
         self,
@@ -103,7 +122,7 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True,
+        threaded: bool = True
     ) -> None:
         return self._send_rcv(
             level="eth",
@@ -111,5 +130,24 @@ class BroadcastAdapter:
             timeout=timeout,
             verbose=verbose,
             retry=retry,
-            threaded=threaded,
+            threaded=threaded
         )
+
+    def send_1_eth(
+        self,
+        packet: bytes,
+        timeout: int = 3,
+        verbose: int = 0,
+        retry: int = 0,
+        threaded: bool = True
+    ) -> None:
+        ans, _ = self.send_eth(
+            packet=packet,
+            timeout=timeout,
+            verbose=verbose,
+            retry=retry,
+            threaded=threaded
+        )
+        if ans:
+            return ans[0][1]
+        return None
