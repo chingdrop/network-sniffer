@@ -23,13 +23,13 @@ def ack_scan(target: str, ports: list[int]) -> dict[str, list[int]]:
     }
     pkt = create_tcp_pkt(target, dport=ports, flags="A", seq=12345)
     ans, _ = bca.send(pkt, timeout=5, verbose=0)
-    for sent, rcvd in ans:
-        if rcvd.haslayer(TCP) and rcvd[TCP].flags == TcpFlags.RST_PSH:
+    for sent, recv in ans:
+        if recv.haslayer(TCP) and recv[TCP].flags == TcpFlags.RST_PSH:
             results["closed"].append(sent[TCP].dport)
         elif (
-            rcvd.haslayer(ICMP)
-            and rcvd[ICMP].type == ICMP_DESTINATION_UNREACHABLE
-            and rcvd[ICMP].code in IcmpCodes
+            recv.haslayer(ICMP)
+            and recv[ICMP].type == ICMP_DESTINATION_UNREACHABLE
+            and recv[ICMP].code in IcmpCodes
         ):
             results["filtered"].append(sent[TCP].dport)
         else:
@@ -46,13 +46,13 @@ def xmas_scan(target: str, ports: list[int]) -> dict[str, list[int]]:
     }
     pkt = create_tcp_pkt(target, dport=ports, flags="FPU")
     ans, _ = bca.send(pkt, timeout=5, verbose=0)
-    for sent, rcvd in ans:
-        if rcvd.haslayer(TCP) and rcvd[TCP].flags == TcpFlags.RST_PSH:
+    for sent, recv in ans:
+        if recv.haslayer(TCP) and recv[TCP].flags == TcpFlags.RST_PSH:
             results["closed"].append(sent[TCP].dport)
         elif (
-            rcvd.haslayer(ICMP)
-            and rcvd[ICMP].type == ICMP_DESTINATION_UNREACHABLE
-            and rcvd[ICMP].code in IcmpCodes
+            recv.haslayer(ICMP)
+            and recv[ICMP].type == ICMP_DESTINATION_UNREACHABLE
+            and recv[ICMP].code in IcmpCodes
         ):
             results["filtered"].append(sent[TCP].dport)
         else:
