@@ -19,3 +19,7 @@ class IcmpCodes(IntEnum):
     Communication_with_destination_network_is_administratively_prohibited = 9
     Communication_with_destination_host_is_administratively_prohibited = 10
     Communication_is_administratively_prohibited = 13
+
+    def __iter__(self):
+        for member in type(self):
+            yield member.value
