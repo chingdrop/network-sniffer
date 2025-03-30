@@ -17,6 +17,7 @@ def get_local_ip() -> str:
         s.close()
     return ip
 
+
 def get_local_subnet(iface: str):
     return socket.inet_ntoa(
         fcntl.ioctl(
@@ -25,6 +26,7 @@ def get_local_subnet(iface: str):
             struct.pack(b"256s", iface.encode()),
         )[20:24]
     )
+
 
 def get_network_ip(iface: str):
     ip = get_local_ip()

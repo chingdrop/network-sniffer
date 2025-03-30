@@ -18,9 +18,7 @@ def arp_ping(target: str, verbose=True) -> list[dict]:
             hostname = socket.gethostbyaddr(r[ARP].psrc)[0]
         except socket.herror:
             hostname = ""
-        host_list.append(
-            {"HOSTNAME": hostname, "MAC": r[Ether].src, "IP": r[ARP].psrc}
-        )
+        host_list.append({"HOSTNAME": hostname, "MAC": r[Ether].src, "IP": r[ARP].psrc})
 
     if verbose:
         message = (
@@ -32,5 +30,5 @@ def arp_ping(target: str, verbose=True) -> list[dict]:
             else "No active hosts found."
         )
         print(message)
-    
+
     return host_list
