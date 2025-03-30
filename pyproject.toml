@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "network-sniffer"
+description = "Network Sniffer is a simple command-line tool to capture and analyze network packets."
+keywords = ["network", "sniffer", "packet", "capture", "analysis", "cli"]
+authors = [{ name = "Craig Hurley", email = "chingdorp@pm.me" }]
+version = "2.0.0"
+readme = "README.md"
+license = "MIT"
+dependencies = [
+    "click >=7.1.2",
+]
+
+[project.urls]
+Repository = "https://github.com/chingdrop/network-sniffer"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages]
+find = { where = ["src"] }
+
+[tool.setuptools.package-dir]
+"" = "src"
