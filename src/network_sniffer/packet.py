@@ -47,7 +47,7 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True
+        threaded: bool = True,
     ):
         try:
             if level == "ip":
@@ -56,7 +56,7 @@ class BroadcastAdapter:
                     timeoutt=timeout,
                     verbose=verbose,
                     retry=retry,
-                    threaded=threaded
+                    threaded=threaded,
                 )
             elif level == "eth":
                 return srp(
@@ -64,7 +64,7 @@ class BroadcastAdapter:
                     timeoutt=timeout,
                     verbose=verbose,
                     retry=retry,
-                    threaded=threaded
+                    threaded=threaded,
                 )
             else:
                 self.logger.error(
@@ -86,7 +86,7 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True
+        threaded: bool = True,
     ) -> List[tuple]:
         return self._send_rcv(
             level="ip",
@@ -94,23 +94,23 @@ class BroadcastAdapter:
             timeout=timeout,
             verbose=verbose,
             retry=retry,
-            threaded=threaded
+            threaded=threaded,
         )
-    
+
     def send1(
         self,
         packet: bytes,
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True
+        threaded: bool = True,
     ):
         ans, _ = self.send(
             packet=packet,
             timeout=timeout,
             verbose=verbose,
             retry=retry,
-            threaded=threaded
+            threaded=threaded,
         )
         if ans:
             return ans[0][1]
@@ -122,7 +122,7 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True
+        threaded: bool = True,
     ) -> List[tuple]:
         return self._send_rcv(
             level="eth",
@@ -130,7 +130,7 @@ class BroadcastAdapter:
             timeout=timeout,
             verbose=verbose,
             retry=retry,
-            threaded=threaded
+            threaded=threaded,
         )
 
     def sendp1(
@@ -139,14 +139,14 @@ class BroadcastAdapter:
         timeout: int = 3,
         verbose: int = 0,
         retry: int = 0,
-        threaded: bool = True
+        threaded: bool = True,
     ):
         ans, _ = self.sendp(
             packet=packet,
             timeout=timeout,
             verbose=verbose,
             retry=retry,
-            threaded=threaded
+            threaded=threaded,
         )
         if ans:
             return ans[0][1]
