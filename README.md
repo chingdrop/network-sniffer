@@ -14,6 +14,8 @@ Network Sniffer will offer an interface for scanning and enumerating computer ne
 
 ## Process
 
+Follow the instructions in [[RASPI]] (under `/docs`) for setting up the Raspberry Pi.
+
 Work in Progress
 
 * * *
