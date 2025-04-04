@@ -27,6 +27,10 @@
     `sudo apt update && sudo apt dist-upgrade -y && sudo apt autoremove -y`
 2. Install necessary packages.
     `sudo apt install -y curl git python3 python3-pip build-essential`
+3. Perform a reboot of the system.
+    `sudo shutdown -r now`
+4. Create a downloads directory.
+    ``
 
 * * *
 
@@ -136,8 +140,7 @@ KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
     `cd ~/code`  
     `git clone git@github.com:chingdrop/wifi_analyzer.git`
 3. Install required python packages.
-    `sudo pip install -r requirements.txt`  
-    `sudo pip install .`
+    `sudo pip install -r requirements.txt && sudo pip install .`
 4. Configure the user name and email for commits.
     `git config --global user.name "John Warhammer"`
     `git config --global user.email <example@email.com>`
@@ -171,3 +174,21 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 ```
+
+* * *
+
+## Wireless Adapter
+
+[RTL8812AU Linux Driver - GitHub](https://github.com/morrownr/8812au-20210820)
+
+### Install Linux Driver
+
+1. Install the dependent packages.
+    `sudo apt-get install -y gcc make bc kernel-headers`
+2. Install highly recommended packages.
+    `sudo apt-get install -y dkms rfkill iw ip`
+3. Clone the GitHub repository.
+    `git clone https://github.com/morrownr/8812au-20210820.git`
+4. Move to the newly created directory and execute the installation script.
+    `cd 8812au-20210820 && ./install-driver.sh`
+5. Respond to the command prompts and finalize installation.
