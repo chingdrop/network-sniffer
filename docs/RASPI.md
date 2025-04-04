@@ -32,8 +32,6 @@
 4. Create a downloads directory.
     ``
 
-* * *
-
 ## SSH
 
 ### Secure Key Directory
@@ -117,8 +115,6 @@ MACs hmac-sha2-512,hmac-sha2-256
 KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 ```
 
-* * *
-
 ## Git
 
 ### Configuring SSH keys
@@ -144,8 +140,6 @@ KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 4. Configure the user name and email for commits.
     `git config --global user.name "John Warhammer"`
     `git config --global user.email <example@email.com>`
-
-* * *
 
 ## Docker
 
@@ -174,8 +168,6 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 ```
-
-* * *
 
 ## Wireless Adapter
 
