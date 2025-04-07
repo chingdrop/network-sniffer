@@ -4,7 +4,7 @@
 
 ### Creating Boot Media
 
-[Raspberry Pi - Software](https://www.raspberrypi.com/software/)
+Find the Raspberry Pi Imager here: [Raspberry Pi - Software](https://www.raspberrypi.com/software/)
 
 1. Use a USB Micro SD card reader to access the storage of your Raspberry Pi.
 2. Use Raspberry Pi Imager to flash the Micro SD card.
@@ -171,9 +171,10 @@ sudo apt-get update
 
 ## Wireless Adapter
 
-[RTL8812AU Linux Driver - GitHub](https://github.com/morrownr/8812au-20210820)
-
 ### Install Linux Driver
+
+Morrownr and friends have a great guide for installing the driver:
+[RTL8812AU Linux Driver - GitHub](https://github.com/morrownr/8812au-20210820)
 
 1. Install the dependent packages.
     `sudo apt-get install -y gcc make bc kernel-headers`
